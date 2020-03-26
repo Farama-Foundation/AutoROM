@@ -1,45 +1,30 @@
-import subprocess
-from subprocess import PIPE
+import requests
+from bs4 import BeautifulSoup
+import os
 
-"""
-Commands to be run are:
+top_url = "https://www.gamulator.com/roms/atari-2600/"
+r = requests.get(top_url)
+soup = BeautifulSoup(r.content, "html5lib")
+root_dir = os.path.expanduser("~")
 
-transmission-daemon
-transmission-remote -a "*.torrent"
-transmission-remote -l until Done
-transmission-remote -t all -r
+links = soup.findAll("a")
+links = filter(lambda x: x.get("class") == None, links)
+links = filter(lambda x: x.get("href").startswith("/roms/atari-2600"), links)
+links = filter(lambda x: x.find_all("picture") == [],links)
+for l in links:
+    sub_href = l["href"]
+    sub_href = sub_href[16:]
+    new_url = top_url + sub_href+"/download"
+    sub_url = requests.get(new_url)
+    sub_soup = BeautifulSoup(sub_url.content, "html5lib")
+    sub_links = sub_soup.find_all("a")
+    sub_links = filter(lambda  x: x.get("href").startswith("https://downloads"), sub_links)
+    # should only be 1 link
+    for s in sub_links:
+        download_link = s.get("href")
+        download_req = requests.get(download_link)
+        file_title = root_dir + sub_href
+        open(file_title,"wb").write(download_req.content)
+    print("Downloaded ", sub_href[1:])
 
-"""
-
-torrent_file = "https://webtorrent.io/torrents/tears-of-steel.torrent"
-
-# start transmission daemon
-process = subprocess.Popen(["transmission-daemon"], stdout=PIPE, stderr=PIPE)
-stdout, stderr = process.communicate()
-# begin torrent
-process = subprocess.Popen(
-    ["transmission-remote", "-a", torrent_file], stdout=PIPE, stderr=PIPE)
-stdout, stderr = process.communicate()
-
-# repeatedly list all torrent download statuses until torrent done
-done = False
-prev_download = ""
-while not done:
-    list_res = subprocess.check_output(["transmission-remote", "-l"])
-    lines = list_res.splitlines()
-    if len(lines) < 3:
-        print("Error in starting torrent")
-        break
-    else:
-        status_line = lines[1].decode("utf-8")
-        status_line_arr = status_line.split()
-        if prev_download != status_line_arr[1]:
-            prev_download = status_line_arr[1]
-            print(prev_download)
-        if status_line_arr[1] == "100%":
-            done = True
-
-print("Successfully downloaded torrent")
-
-# stop torrent seeding
-subprocess.call(["transmission-remote", "-t", "all", "-r"])
+    
