@@ -41,19 +41,11 @@ for x in f:
         extension_map[game_name] = extension 
 f.close()
 
-print("Before installing the ROMs, please respond Yes or No to the following agreements.")
-ans = input("I have a license to download and own ROMs for the Atari 2600 (Y or N)")
+print("AutoROM will download the Atari 2600 ROMs in link_map.txt from gamulator.com and s2roms.cc, and put them into " + install_dir + " for use with ALE-Py (and Gym).")
+ans = input("I own a license to these Atari 2600 ROMs, agree not to distribute these ROMS, agree to the terms of service for gamulator.com and s2roms.cc, and wish to proceed (Y or N).")
 if ans != "Y" and ans != "y":
     quit()
-ans = input("I have a license to a proper emulator (Y or N) ")
-if ans != "Y" and ans != "y":
-    quit()
-ans = input("I will not distribute the ROMs (Y or N) ")
-if ans != "Y" and ans != "y":
-    quit()
-ans = input("The following directory will be created: " + install_dir + " (Y or N) ")
-if ans != "Y" and ans != "y":
-    quit()
+
 os.mkdir(install_dir)
 for game_name in final_map:
     download = requests.get(final_map[game_name])
