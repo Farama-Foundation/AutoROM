@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="AutoROM",
-    version="0.1.1",
+    version="0.1.2",
     author="PettingZoo Team",
     author_email="justinkterry@gmail.com",
     description="Automated installation of Atari ROMs for Gym/ALE-Py",
@@ -15,8 +15,7 @@ setuptools.setup(
     keywords=["Reinforcement Learning", "game", "RL", "AI", "gym"],
     packages=setuptools.find_packages(),
     install_requires=[
-        'ale_py',
-        'beautifulsoup4'
+        'ale_py'
     ],
     requires_python='>=3.6',
     data_files = [("", ["LICENSE.txt", "link_map.txt"])],
@@ -27,4 +26,5 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
+    scripts=['bin/AutoROM'],
 )

@@ -1,6 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import requests
-from bs4 import BeautifulSoup
 import os
 import ale_py
 import zipfile
@@ -36,13 +35,13 @@ for x in f:
     if len(payload[1]) > 1:
         game_name = payload[0].strip()
         game_url = payload[1].strip()
-        extension = game_url[-4:]
+        extension = ".zip"
         final_map[game_name] = game_url
         extension_map[game_name] = extension 
 f.close()
 
-print("AutoROM will download the Atari 2600 ROMs in link_map.txt from gamulator.com and s2roms.cc, and put them into \n" + install_dir + " \nfor use with ALE-Py (and Gym).")
-ans = input("I own a license to these Atari 2600 ROMs, agree not to distribute these ROMS, agree to the \nterms of service for gamulator.com and s2roms.cc, and wish to proceed (Y or N).")
+print("AutoROM will download the Atari 2600 ROMs in link_map.txt from \ngamulator.com, atarimania.com and s2roms.cc, and put them into \n" + install_dir + " \nfor use with ALE-Py (and Gym).")
+ans = input("I own a license to these Atari 2600 ROMs, agree not to distribute these ROMS, \nagree to the terms of service for gamulator.com, atarimania.com and s2roms.cc, and wish to proceed (Y or N).")
 if ans != "Y" and ans != "y":
     quit()
 
@@ -58,5 +57,10 @@ for game_name in final_map:
     with zipfile.ZipFile(file_title, "r") as zip_ref:
         zip_ref.extractall(sub_dir)
     os.remove(file_title)
+    # rename extracted files to .bin
+    sub_files = os.listdir(sub_dir)
+    for s in sub_files:
+        new_s = game_name+".bin"
+        os.rename(sub_dir+s, sub_dir+new_s)
     print("Installed ",game_name)
 
