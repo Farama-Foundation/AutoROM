@@ -29,8 +29,9 @@ def main():
 
     total_sublink_list = []
 
+    __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
     new_link_file = "link_map.txt"
-    f = open(new_link_file, "r")
+    f = open(os.path.join(__location__, new_link_file), "r")
     extension_map = {}
     final_map = {}
     for x in f:
