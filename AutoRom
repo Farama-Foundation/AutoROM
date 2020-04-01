@@ -57,12 +57,14 @@ if ans != "Y" and ans != "y":
 os.mkdir(install_dir)
 for game_name in final_map:
     download = requests.get(final_map[game_name])
-    file_title = install_dir + game_name + extension_map[game_name]
+    file_title = install_dir +game_name + extension_map[game_name]
     new_file = open(file_title, "wb")
     new_file.write(download.content)
     new_file.close()
+    sub_dir = install_dir + game_name + "/"
+    os.mkdir(sub_dir)
     with zipfile.ZipFile(file_title, "r") as zip_ref:
-        zip_ref.extractall(install_dir)
+        zip_ref.extractall(sub_dir)
     os.remove(file_title)
     print("Installed ",game_name)
 
