@@ -1,4 +1,4 @@
-#!/user/bin/env python3
+#!python
 
 import AutoROM
 AutoROM.main()
