@@ -30,7 +30,7 @@ Frostbite^^^https://downloads.gamulator.com/roms/Frostbite (1983) (Activision) (
 Galaxian^^^https://downloads.gamulator.com/roms/Galaxian (1983) (Atari) [!].zip
 Gopher^^^https://s2roms.cc/s3roms/Atari%202600/G-K/Gopher%20%281982%29%20%28US%20Games%29.zip
 Gravitar^^^https://s2roms.cc/s3roms/Atari%202600/G-K/Gravitar%20%281988%29%20%28Atari%29%20%5B%21%5D.zip
-Hero^^^
+Hero^^^http://www.atarimania.com/pgedump.awp?id=11608
 IceHockey^^^https://s2roms.cc/s3roms/Atari%202600/G-K/Ice%20Hockey%20%281981%29%20%28Activision%29%20%5B%21%5D.zip
 JamesBond^^^https://s2roms.cc/s3roms/Atari%202600/G-K/James%20Bond%20007%20%281983%29%20%28Parker%20Bros%29.zip
 JourneyEscape^^^https://s2roms.cc/s3roms/Atari%202600/G-K/Journey%20-%20Escape%20%281982%29%20%28Data%20Age%29%20%5B%21%5D.zip
@@ -76,12 +76,12 @@ YarsRevenge^^^https://s2roms.cc/s3roms/Atari%202600/U-Z/Yar%27s%20Revenge%20%281
 Zaxxon^^^https://s2roms.cc/s3roms/Atari%202600/U-Z/Zaxxon%20%281983%29%20%28CBS%20Electronics%29.zip
 Atlantis2^^^https://s2roms.cc/s3roms/Atari%202600/A-C/Atlantis%20II%20%281982%29%20%28Imagic%29%20%5B%21%5D.zip
 Backgammon^^^https://s2roms.cc/s3roms/Atari%202600/A-C/Backgammon%20%281978%29%20%28Atari%29.zip
-BasicMath^^^
+BasicMath^^^http://www.atarimania.com/pgedump.awp?id=11568
 Blackjack^^^https://s2roms.cc/s3roms/Atari%202600/A-C/Blackjack%20%281977%29%20%28Atari%29%20%5B%21%5D.zip
 Casino^^^https://s2roms.cc/s3roms/Atari%202600/A-C/Casino%20%281978%29%20%28Atari%29%20%28PAL%29%20%5B%21%5D.zip
 Crossbow^^^https://s2roms.cc/s3roms/Atari%202600/A-C/Crossbow%20%281987%29%20%28Atari%29%20%28PAL%29%20%5B%21%5D.zip
 DarkChambers^^^https://s2roms.cc/s3roms/Atari%202600/D-F/Dark%20Chambers%20%281988%29%20%28Atari%29.zip
-Earthworld^^^
+Earthworld^^^http://www.atarimania.com/pgedump.awp?id=7687
 Entombed^^^https://s2roms.cc/s3roms/Atari%202600/D-F/Entombed%20%281982%29%20%28US%20Games%29%20%5B%21%5D.zip
 ET^^^https://s2roms.cc/s3roms/Atari%202600/D-F/E.T.%20The%20Extra-Terrestrial%20%281982%29%20%28Atari%29%20%28PAL%29%20%5B%21%5D.zip
 FlagCapture^^^https://s2roms.cc/s3roms/Atari%202600/D-F/Flag%20Capture%20%281978%29%20%28Atari%29.zip
@@ -97,7 +97,7 @@ Pitfall2^^^https://downloads.gamulator.com/roms/Pitfall 2 (1984) (Activision) (P
 SpaceWar^^^https://s2roms.cc/s3roms/Atari%202600/P-T/Space%20War%20%281978%29%20%28Atari%29%20%5B%21%5D.zip
 Superman^^^https://downloads.gamulator.com/roms/Superman (1978) (Atari).zip
 Surround^^^https://s2roms.cc/s3roms/Atari%202600/P-T/Surround%20%281978%29%20%28Atari%29.zip
-TicTacToe3D^^^
+TicTacToe3D^^^http://www.atarimania.com/pgedump.awp?id=8578
 VideoCheckers^^^https://s2roms.cc/s3roms/Atari%202600/U-Z/Video%20Checkers%20%281978%29%20%28Atari%29.zip
 VideoChess^^^https://s2roms.cc/s3roms/Atari%202600/U-Z/Video%20Chess%20%281978%29%20%28Atari%29.zip
 VideoCube^^^https://s2roms.cc/s3roms/Atari%202600/U-Z/Video%20Cube%20%28CCE%29.zip
