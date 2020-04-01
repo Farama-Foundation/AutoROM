@@ -19,7 +19,7 @@ setuptools.setup(
         'beautifulsoup4'
     ],
     requires_python='>=3.6',
-    data_files = [("", ["LICENSE.txt"])],
+    data_files = [("", ["LICENSE.txt", "link_map.txt"])],
     classifiers=[
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
