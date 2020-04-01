@@ -18,9 +18,10 @@ setuptools.setup(
         'ale_py',
         'beautifulsoup4'
     ],
-    requires_python='>=3.6',
+    requires_python='>=3.5',
     data_files = [("", ["LICENSE.txt", "link_map.txt"])],
     classifiers=[
+        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
