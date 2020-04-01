@@ -41,8 +41,8 @@ for x in f:
         extension_map[game_name] = extension 
 f.close()
 
-print("AutoROM will download the Atari 2600 ROMs in link_map.txt from gamulator.com and s2roms.cc, and put them into " + install_dir + " for use with ALE-Py (and Gym).")
-ans = input("I own a license to these Atari 2600 ROMs, agree not to distribute these ROMS, agree to the terms of service for gamulator.com and s2roms.cc, and wish to proceed (Y or N).")
+print("AutoROM will download the Atari 2600 ROMs in link_map.txt from gamulator.com and s2roms.cc, and put them into \n" + install_dir + " \nfor use with ALE-Py (and Gym).")
+ans = input("I own a license to these Atari 2600 ROMs, agree not to distribute these ROMS, agree to the \nterms of service for gamulator.com and s2roms.cc, and wish to proceed (Y or N).")
 if ans != "Y" and ans != "y":
     quit()
 
