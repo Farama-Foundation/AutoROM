@@ -8,7 +8,7 @@ setuptools.setup(
     version="0.1.0",
     author="PettingZoo Team",
     author_email="justinkterry@gmail.com",
-    description="Automated installation of Atari ROMs for Gym/ALE-Py,
+    description="Automated installation of Atari ROMs for Gym/ALE-Py",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/PettingZoo-Team/AutoROM",
