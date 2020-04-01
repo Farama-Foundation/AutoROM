@@ -1,0 +1,1 @@
+from .AutoROM import main

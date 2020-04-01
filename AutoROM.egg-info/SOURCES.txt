@@ -1,0 +1,13 @@
+LICENSE.txt
+MANIFEST.in
+README.md
+setup.py
+AutoROM/AutoROM.py
+AutoROM/__init__.py
+AutoROM/link_map.txt
+AutoROM.egg-info/PKG-INFO
+AutoROM.egg-info/SOURCES.txt
+AutoROM.egg-info/dependency_links.txt
+AutoROM.egg-info/requires.txt
+AutoROM.egg-info/top_level.txt
+bin/AutoROM
