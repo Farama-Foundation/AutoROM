@@ -54,12 +54,13 @@ def main():
         payload[0] = payload[0].decode("utf-8")
         checksum_map[payload[1]] = payload[0]
 
-    print("AutoROM will download the Atari 2600 ROMs in link_map.txt from"+
-        "\ngamulator.com, atarimania.com and s2roms.cc, and put them into \n"
-        + install_dir + " \nfor use with ALE-Py (and Gym).")
+    print("AutoROM will download the Atari 2600 ROMs in link_map.txt from",
+        "\ngamulator.com, atarimania.com and s2roms.cc, and put them into \n",
+        install_dir, " \nfor use with ALE-Py (and Gym).")
     ans = input("I own a license to these Atari 2600 ROMs, agree not to "+
         "distribute these ROMS, \nagree to the terms of service for gamulator.com" +
         ", atarimania.com and s2roms.cc, and wish to proceed (Y or N).")
+
     if ans != "Y" and ans != "y":
         quit()
 
