@@ -3,6 +3,7 @@ import requests
 import os
 import ale_py
 import zipfile
+import hashlib
 
 def main():
     install_dir = ale_py.__file__
@@ -44,16 +45,27 @@ def main():
             extension_map[game_name] = extension
     f.close()
 
-    print("AutoROM will download the Atari 2600 ROMs in link_map.txt from \
-        \ngamulator.com, atarimania.com and s2roms.cc, and put them into \n"
+    checksum_file = "checksums.txt"
+    ch = open(os.path.join(__location__, checksum_file), "rb")
+    checksum_map = {}
+    for c in ch:
+        payload = c.split()
+        payload[1] = payload[1].decode("utf-8")
+        payload[0] = payload[0].decode("utf-8")
+        checksum_map[payload[1]] = payload[0]
+
+    print("AutoROM will download the Atari 2600 ROMs in link_map.txt from"+
+        "\ngamulator.com, atarimania.com and s2roms.cc, and put them into \n"
         + install_dir + " \nfor use with ALE-Py (and Gym).")
-    ans = input("I own a license to these Atari 2600 ROMs, agree not to \
-        distribute these ROMS, \nagree to the terms of service for gamulator.com\
-        , atarimania.com and s2roms.cc, and wish to proceed (Y or N).")
+    ans = input("I own a license to these Atari 2600 ROMs, agree not to "+
+        "distribute these ROMS, \nagree to the terms of service for gamulator.com" +
+        ", atarimania.com and s2roms.cc, and wish to proceed (Y or N).")
     if ans != "Y" and ans != "y":
         quit()
 
     os.mkdir(install_dir)
+    failed_checksum_count = 0
+    missing_checksum_count = 0
     for game_name in final_map:
         download = requests.get(final_map[game_name])
         file_title = install_dir + game_name + extension_map[game_name]
@@ -70,4 +82,19 @@ def main():
         for s in sub_files:
             new_s = game_name+".bin"
             os.rename(sub_dir+s, sub_dir+new_s)
+
+        # print md5 hash
+        hash_md5 = hashlib.md5()
+        with open(sub_dir+new_s, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                hash_md5.update(chunk)
+        d = hash_md5.hexdigest()
         print("Installed ", game_name)
+        if game_name in checksum_map:
+            if d != checksum_map[game_name]:
+                print(game_name," checksum fail. Needed ", checksum_map[game_name], "\nfound:", d)
+                failed_checksum_count += 1
+        else:
+            missing_checksum_count += 1
+
+    print("Missing checksums: ", missing_checksum_count, " failed checksums: ", failed_checksum_count)
