@@ -1,2 +1,5 @@
 *.pyc
-__pycache__
+__pycache__/
+dist/
+build/
+AutoROM.egg-info/
