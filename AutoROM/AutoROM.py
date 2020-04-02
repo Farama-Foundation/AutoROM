@@ -49,7 +49,7 @@ def main():
         + install_dir + " \nfor use with ALE-Py (and Gym).")
     ans = input("I own a license to these Atari 2600 ROMs, agree not to \
         distribute these ROMS, \nagree to the terms of service for gamulator.com\
-        , atarimania.com and s2roms.cc, and wish to proceed (Y or N).")
+        , atarimania.com and s2roms.cc, and wish to proceed. (Y or N)")
     if ans != "Y" and ans != "y":
         quit()
 
