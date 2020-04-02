@@ -6,3 +6,5 @@ AutoROM automatically downloads the needed Atari ROMs from ROM hosting websites 
 pip3 install autorom
 AutoROM
 ```
+
+ The specific ROM websites AutoROM pulls from are gamulator.com, atarimania.com and s2roms.cc.
