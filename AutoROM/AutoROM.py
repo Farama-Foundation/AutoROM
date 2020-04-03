@@ -35,7 +35,7 @@ def main():
 
     print("AutoROM will download the Atari 2600 ROMs in link_map.txt from",
         "\ngamulator.com, atarimania.com and s2roms.cc, and put them into\n",
-        install_dir, " \nfor use with ALE-Py (and Gym).")
+        install_dir, " \nfor use with ALE-Py (and Gym). Old files will be overwritten.")
     ans = input("I own a license to these Atari 2600 ROMs, agree not to "+
         "distribute these ROMS, \nagree to the terms of service for gamulator.com" +
         ", atarimania.com and s2roms.cc, and wish to proceed (Y or N).")
@@ -43,7 +43,8 @@ def main():
     if ans != "Y" and ans != "y":
         quit()
 
-    os.mkdir(install_dir)
+    if not os.path.exists(install_dir):
+        os.mkdir(install_dir)
     failed_checksum_count = 0
     missing_checksum_count = 0
     for game_name in final_map:
@@ -53,7 +54,11 @@ def main():
         new_file.write(download.content)
         new_file.close()
         sub_dir = install_dir + game_name + "/"
-        os.mkdir(sub_dir)
+        if not os.path.exists(sub_dir):
+            os.mkdir(sub_dir)
+        sub_files = os.listdir(sub_dir)
+        for s in sub_files:
+            print("Removing old ",s)
         with zipfile.ZipFile(file_title, "r") as zip_ref:
             zip_ref.extractall(sub_dir)
         os.remove(file_title)
