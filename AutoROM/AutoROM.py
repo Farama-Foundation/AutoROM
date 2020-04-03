@@ -5,7 +5,7 @@ import ale_py
 import zipfile
 import hashlib
 
-def main():
+def main(license_accepted=False):
     install_dir = ale_py.__file__
     install_dir = install_dir[:-11] + "ROM/"
 
@@ -35,13 +35,15 @@ def main():
 
     print("AutoROM will download the Atari 2600 ROMs in link_map.txt from",
         "\ngamulator.com, atarimania.com and s2roms.cc, and put them into\n",
-        install_dir, " \nfor use with ALE-Py (and Gym). Old files will be overwritten.")
-    ans = input("I own a license to these Atari 2600 ROMs, agree not to "+
-        "distribute these ROMS, \nagree to the terms of service for gamulator.com" +
-        ", atarimania.com and s2roms.cc, and wish to proceed (Y or N).")
+        install_dir, " \nfor use with ALE-Py (and Gym). Existing files will be overwritten.")
+    if not license_accepted:
+        ans = input("I own a license to these Atari 2600 ROMs, agree not to "+
+            "distribute these ROMS, \nagree to the terms of service for gamulator.com" +
+            ", atarimania.com and s2roms.cc, and wish to proceed (Y or N).")
 
-    if ans != "Y" and ans != "y":
-        quit()
+
+        if ans != "Y" and ans != "y":
+            quit()
 
     if not os.path.exists(install_dir):
         os.mkdir(install_dir)
@@ -86,4 +88,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+    license_accept = False
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "-v":
+            license_accept = True
+    main(license_accept)

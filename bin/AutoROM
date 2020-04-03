@@ -1,4 +1,8 @@
 #!/user/bin/env python3
-
+import sys
 import AutoROM
-AutoROM.main()
+license_accepted = False
+if len(sys.argv) > 1:
+    if sys.argv[1] == "-v":
+        license_accepted = True
+AutoROM.main(license_accepted)
