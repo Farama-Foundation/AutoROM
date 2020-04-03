@@ -9,8 +9,6 @@ def main():
     install_dir = ale_py.__file__
     install_dir = install_dir[:-11] + "ROM/"
 
-    total_sublink_list = []
-
     __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
     new_link_file = "link_map.txt"
     f = open(os.path.join(__location__, new_link_file), "r")
@@ -75,12 +73,12 @@ def main():
         hash_game_name = game_name+".bin" 
         if hash_game_name in checksum_map:
             if d != checksum_map[hash_game_name]:
-                print(game_name," checksum fail. Needed ", checksum_map[hash_game_name], "\nfound:", d)
+                #print(game_name," checksum fail. Needed ", checksum_map[hash_game_name], "\nfound:", d)
                 failed_checksum_count += 1
         else:
             missing_checksum_count += 1
 
-    print("Missing checksums: ", missing_checksum_count, " failed checksums: ", failed_checksum_count)
+
 
 if __name__ == "__main__":
     main()

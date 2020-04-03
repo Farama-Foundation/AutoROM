@@ -5,9 +5,9 @@ amidar^^^https://s2roms.cc/s3roms/Atari%202600/A-C/Amidar%20%281983%29%20%28Park
 assault^^^https://s2roms.cc/s3roms/Atari%202600/A-C/Assault%20%28Bomb%29.zip
 asterix^^^https://s2roms.cc/s3roms/Atari%202600/A-C/Asterix%20%281988%29%20%28Atari%29%20%28Prototype%29%20%28NTSC%29.zip
 asteroids^^^https://downloads.gamulator.com/roms/Asteroids [p1].zip
-atlantis_ii^^^https://s2roms.cc/s3roms/Atari%202600/A-C/Atlantis%20II%20%281982%29%20%28Imagic%29%20%5B%21%5D.zip
+atlantis2^^^https://s2roms.cc/s3roms/Atari%202600/A-C/Atlantis%20II%20%281982%29%20%28Imagic%29%20%5B%21%5D.zip
 atlantis^^^http://www.atarimania.com/pgedump.awp?id=20845
-backgammon^^^https://s2roms.cc/s3roms/Atari%202600/A-C/Backgammon%20%281978%29%20%28Atari%29.zip
+backgammon^^^http://www.atarimania.com/pgedump.awp?id=18117
 bank_heist^^^https://s2roms.cc/s3roms/Atari%202600/A-C/Bank%20Heist%20%281983%29%20%2820th%20Century%20Fox%29.zip
 basic_math^^^http://www.atarimania.com/pgedump.awp?id=11568
 battle_zone^^^https://s2roms.cc/s3roms/Atari%202600/A-C/Battlezone%20%281983%29%20%28Atari%29%20%5B%21%5D.zip
