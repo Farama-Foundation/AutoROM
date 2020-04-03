@@ -1,4 +1,0 @@
-#!python
-
-import AutoROM
-AutoROM.main()
