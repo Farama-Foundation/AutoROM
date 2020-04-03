@@ -1,2 +1,4 @@
 ale_py
-beautifulsoup4
+requests
+zipfile
+hashlib
