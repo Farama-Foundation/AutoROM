@@ -24,4 +24,3 @@ for g in game_list:
     ale.loadROM(g)
 
 print("Successfully passed smoke test")
-
