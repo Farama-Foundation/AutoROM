@@ -1,4 +1,2 @@
 ale_py
 requests
-zipfile
-hashlib
