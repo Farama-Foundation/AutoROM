@@ -9,4 +9,4 @@ install:
   - pip install -r requirements.txt
 
 script:
-  - python3 AutoROM/smoke_test.py
+  - python3 AutoROM/smoke_test.py -i
