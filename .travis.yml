@@ -6,7 +6,7 @@ python:
   - "3.8"
 
 install:
-  - pip install -r requirements.txt
+  - pip3 install -r requirements.txt
 
 script:
   - python3 AutoROM/smoke_test.py -i
