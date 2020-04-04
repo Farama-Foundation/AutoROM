@@ -1,4 +1,4 @@
-## AutoROM
+# AutoROM
 
 [![Build Status](https://travis-ci.com/PettingZoo-Team/AutoROM.svg?branch=master)](https://travis-ci.com/PettingZoo-Team/AutoROM)
 
