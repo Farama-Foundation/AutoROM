@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="AutoROM",
-    version="0.1.9",
+    version="0.1.10",
     author="PettingZoo Team",
     author_email="justinkterry@gmail.com",
     description="Automated installation of Atari ROMs for Gym/ALE-Py",
