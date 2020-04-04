@@ -6,7 +6,7 @@ def main():
     install_dir = install_dir[:-11] + "ROM/"
 
     game_list = []
-    freeze_list = ["backgammon"]
+    freeze_list = []
 
     for f in freeze_list:
         print("Ignoring ",f)
