@@ -35,7 +35,7 @@ def main(license_accepted=False):
 
     print("AutoROM will download the Atari 2600 ROMs in link_map.txt from",
         "\ngamulator.com, atarimania.com and s2roms.cc, and put them into\n",
-        install_dir, " \nfor use with ALE-Py (and Gym). Existing files will be overwritten.")
+        install_dir, " \nfor use with ALE-Py (and Gym). Existing ROMS will be overwritten.")
     if not license_accepted:
         ans = input("I own a license to these Atari 2600 ROMs, agree not to "+
             "distribute these ROMS, \nagree to the terms of service for gamulator.com" +
