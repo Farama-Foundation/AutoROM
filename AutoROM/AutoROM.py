@@ -5,7 +5,7 @@ import ale_py
 import zipfile
 import hashlib
 
-def main(license_accepted=False):
+def main(license_accepted=False, specific=None):
     install_dir = ale_py.__file__
     install_dir = install_dir[:-11] + "ROM/"
 
@@ -49,6 +49,12 @@ def main(license_accepted=False):
         os.mkdir(install_dir)
     failed_checksum_count = 0
     missing_checksum_count = 0
+    failed_list = []
+    if specific is not None:
+        mapped = final_map[specific]
+        new_map = {}
+        new_map[specific] = mapped
+        final_map = new_map
     for game_name in final_map:
         download = requests.get(final_map[game_name])
         file_title = install_dir + game_name + extension_map[game_name]
@@ -80,17 +86,27 @@ def main(license_accepted=False):
         hash_game_name = game_name+".bin" 
         if hash_game_name in checksum_map:
             if d != checksum_map[hash_game_name]:
-                #print(game_name," checksum fail. Needed ", checksum_map[hash_game_name], "\nfound:", d)
+                print(game_name," checksum fail. Needed ", checksum_map[hash_game_name], "\nfound:", d)
                 failed_checksum_count += 1
+                failed_list.append(game_name)
         else:
             missing_checksum_count += 1
+
+    print("Mismatched Checksums: ")
+    for fail in failed_list:
+        print(fail, " ")
 
 
 
 if __name__ == "__main__":
     import sys
     license_accept = False
+    specific=None
     if len(sys.argv) > 1:
         if sys.argv[1] == "-v":
             license_accept = True
-    main(license_accept)
+            if len(sys.argv) > 2:
+                specific = sys.argv[2]
+        else:
+            specific=sys.argv[1]
+    main(license_accept, specific)
