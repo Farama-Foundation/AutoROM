@@ -21,6 +21,7 @@ carnival^^^https://s2roms.cc/s3roms/Atari%202600/A-C/Carnival%20%281982%29%20%28
 casino^^^http://www.atarimania.com/pgedump.awp?id=7247
 centipede^^^http://www.atarimania.com/pgedump.awp?id=7248
 chopper_command^^^https://s2roms.cc/s3roms/Atari%202600/A-C/Chopper%20Command%20%281982%29%20%28Activision%29%20%5B%21%5D.zip
+combat^^^http://www.atarimania.com/pgedump.awp?id=7258
 crazy_climber^^^https://s2roms.cc/s3roms/Atari%202600/A-C/Crazy%20Climber%20%281983%29%20%28Atari%29.zip
 crossbow^^^http://www.atarimania.com/pgedump.awp?id=11573
 darkchambers^^^https://s2roms.cc/s3roms/Atari%202600/D-F/Dark%20Chambers%20%281988%29%20%28Atari%29.zip
@@ -48,6 +49,7 @@ human_cannonball^^^https://s2roms.cc/s3roms/Atari%202600/G-K/Human%20Cannonball%
 ice_hockey^^^https://s2roms.cc/s3roms/Atari%202600/G-K/Ice%20Hockey%20%281981%29%20%28Activision%29%20%5B%21%5D.zip
 jamesbond^^^https://s2roms.cc/s3roms/Atari%202600/G-K/James%20Bond%20007%20%281983%29%20%28Parker%20Bros%29.zip
 journey_escape^^^https://s2roms.cc/s3roms/Atari%202600/G-K/Journey%20-%20Escape%20%281982%29%20%28Data%20Age%29%20%5B%21%5D.zip
+joust^^^http://www.atarimania.com/pgedump.awp?id=18219
 kaboom^^^http://www.atarimania.com/pgedump.awp?id=13514
 kangaroo^^^https://s2roms.cc/s3roms/Atari%202600/G-K/Kangaroo%20%281983%29%20%28Atari%29.zip
 keystone_kapers^^^http://www.atarimania.com/pgedump.awp?id=13976
@@ -59,6 +61,7 @@ kung_fu_master^^^https://s2roms.cc/s3roms/Atari%202600/G-K/Kung%20Fu%20Master%20
 laser_gates^^^http://www.atarimania.com/pgedump.awp?id=8478
 lost_luggage^^^http://www.atarimania.com/pgedump.awp?id=13634
 mario_bros^^^http://www.atarimania.com/pgedump.awp?id=29368
+maze_craze^^^http://www.atarimania.com/pgedump.awp?id=18244
 miniature_golf^^^http://www.atarimania.com/pgedump.awp?id=7982
 montezuma_revenge^^^https://s2roms.cc/s3roms/Atari%202600/L-O/Montezuma%27s%20Revenge%20-%20Starring%20Panama%20Joe%20%281983%29%20%28Parker%20Bros%29.zip
 mr_do^^^http://www.atarimania.com/pgedump.awp?id=12404
@@ -98,6 +101,7 @@ video_checkers^^^https://s2roms.cc/s3roms/Atari%202600/U-Z/Video%20Checkers%20%2
 videochess^^^https://s2roms.cc/s3roms/Atari%202600/U-Z/Video%20Chess%20%281978%29%20%28Atari%29.zip
 videocube^^^http://www.atarimania.com/pgedump.awp?id=7806
 video_pinball^^^https://s2roms.cc/s3roms/Atari%202600/U-Z/Video%20Pinball%20%281980%29%20%28Atari%29%20%5B%21%5D.zip
+warlords^^^http://www.atarimania.com/pgedump.awp?id=16596
 wizard_of_wor^^^https://s2roms.cc/s3roms/Atari%202600/U-Z/Wizard%20of%20Wor%20%281982%29%20%28CBS%20Electronics%29.zip
 word_zapper^^^https://s2roms.cc/s3roms/Atari%202600/U-Z/Word%20Zapper%20%281982%29%20%28US%20Games%29%20%5B%21%5D.zip
 yars_revenge^^^https://s2roms.cc/s3roms/Atari%202600/U-Z/Yar%27s%20Revenge%20%281981%29%20%28Atari%29.zip
