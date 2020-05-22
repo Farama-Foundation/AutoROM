@@ -15,10 +15,12 @@ setuptools.setup(
     keywords=["Reinforcement Learning", "game", "RL", "AI", "gym"],
     packages=setuptools.find_packages(),
     install_requires=[
-        'ale_py'
+        'ale_py',
+        'requests',
+        'pyunpack'
     ],
     python_requires='>=3.5',
-    data_files = [("", ["LICENSE.txt"])],
+    data_files=[("", ["LICENSE.txt"])],
     classifiers=[
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
