@@ -2,3 +2,4 @@ ale_py
 requests
 pyunpack
 tqdm
+multi-agent-ale-py
