@@ -2,6 +2,7 @@
 import requests
 import os
 import ale_py
+import multi_agent_ale_py
 import zipfile
 import hashlib
 from pyunpack import Archive
@@ -22,11 +23,11 @@ def test_unrar(test_loc, test_file):
 def download_rar(install_dir):
     print("Downloading ROMs")
     rar_link = "http://www.atarimania.com/roms/Roms.rar"
-    downloaded_rar = requests.get(rar_link)
+    downloaded_rar = requests.get(rar_link, stream=True)
     rar_file_title = install_dir + "ROMs.rar"
     rar_file = open(rar_file_title, "wb")
     pbar = tqdm(unit="B", total=int(downloaded_rar.headers['Content-Length']))
-    for chunk in downloaded_rar.iter_content(chunk_size=8192):
+    for chunk in downloaded_rar.iter_content(chunk_size=1024):
         pbar.update(len(chunk))
         rar_file.write(chunk)
     rar_file.close()
@@ -73,10 +74,14 @@ def clean_rar_files(install_dir):
     # delete extracted HC ROMS.zip
     # delete extracted ROMS.zip
     # delete unzipped delete folder
-    os.remove(os.path.join(install_dir, "Roms.rar"))
-    os.remove(os.path.join(install_dir, "ROMS.zip"))
-    os.remove(os.path.join(install_dir, "HC ROMS.zip"))
-    shutil.rmtree(os.path.join(install_dir, "ROMS/"))
+    if os.path.exists(os.path.join(install_dir, "ROMS.rar")):
+        os.remove(os.path.join(install_dir, "ROMS.rar"))
+    if os.path.exists(os.path.join(install_dir, "ROMS.zip")):
+        os.remove(os.path.join(install_dir, "ROMS.zip"))
+    if os.path.exists(os.path.join(install_dir, "HC ROMS.zip")):
+        os.remove(os.path.join(install_dir, "HC ROMS.zip"))
+    if os.path.exists(os.path.join(install_dir, "ROMS/")):
+        shutil.rmtree(os.path.join(install_dir, "ROMS/"))
 
 def manual_downloads(install_dir, manual_map, checksum_map):
     for manual in manual_map:
@@ -113,6 +118,9 @@ def main(license_accepted=False, specific=None):
     install_dir = ale_py.__file__
     install_dir = install_dir[:-11] + "ROM/"
 
+    second_dir = multi_agent_ale_py.__file__
+    second_dir = second_dir[:-11] + "ROM/"
+
     __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
     new_link_file = "link_map.txt"
     f = open(os.path.join(__location__, new_link_file), "r")
@@ -144,7 +152,7 @@ def main(license_accepted=False, specific=None):
 
     print("AutoROM will download the Atari 2600 ROMs in link_map.txt from",
         "\natarimania.com and s2roms.cc, and put them into\n",
-        install_dir, " \nfor use with ALE-Py (and Gym). Existing ROMS will be overwritten.")
+        install_dir, " \nfor use with ALE-Py (and Gym).  They will also be installed into\n", second_dir, "\nfor use with Multi-Agent-ALE-py. Existing ROMS will be overwritten.")
     if not license_accepted:
         ans = input("I own a license to these Atari 2600 ROMs, agree not to "+
             "distribute these ROMS, \nagree to the terms of service for " +
@@ -170,6 +178,11 @@ def main(license_accepted=False, specific=None):
     manual_map = {}
     manual_map["tetris"] = "https://s2roms.cc/s3roms/Atari%202600/P-T/Tetris%202600%20%28Colin%20Hughes%29.zip"
     manual_downloads(install_dir, manual_map, checksum_map)
+
+    # copy into second_dir
+    if os.path.exists(second_dir):
+        shutil.rmtree(second_dir)
+    shutil.copytree(install_dir, second_dir)
 
     for ch in checksum_map:
         print("Missing: ", checksum_map[ch])
