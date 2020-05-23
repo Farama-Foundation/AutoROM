@@ -11,4 +11,4 @@ pip3 install autorom
 AutoROM
 ```
 
- The specific ROM websites AutoROM pulls from are gamulator.com, atarimania.com and s2roms.cc.
+ The specific ROM websites AutoROM pulls from are atarimania.com and s2roms.cc.

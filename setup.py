@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="AutoROM",
-    version="0.1.10",
+    version="0.1.12",
     author="PettingZoo Team",
     author_email="justinkterry@gmail.com",
     description="Automated installation of Atari ROMs for Gym/ALE-Py",
@@ -17,7 +17,8 @@ setuptools.setup(
     install_requires=[
         'ale_py',
         'requests',
-        'pyunpack'
+        'pyunpack',
+        'tqdm'
     ],
     python_requires='>=3.5',
     data_files=[("", ["LICENSE.txt"])],
