@@ -6,10 +6,7 @@ def main():
     install_dir = install_dir[:-11] + "ROM/"
 
     game_list = []
-    freeze_list = []
 
-    for f in freeze_list:
-        print("Ignoring ",f)
 
     __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
     new_link_file = "link_map.txt"
@@ -17,8 +14,7 @@ def main():
     for l in link_file_ref:
         payload = l.split("^^^")
         game_name = install_dir + payload[0] + "/"+payload[0] + ".bin"
-        if not payload[0] in freeze_list:
-            game_list.append(game_name)
+        game_list.append(game_name)
 
     ale = ale_py.ALEInterface()
     for g in game_list:

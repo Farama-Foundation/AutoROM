@@ -1,2 +1,4 @@
 ale_py
 requests
+pyunpack
+tqdm
