@@ -19,10 +19,10 @@ setuptools.setup(
         'requests',
         'pyunpack',
         'tqdm',
-        'multi-agent-ale-py'
+        'multi-agent-ale-py',
+        'patool'
     ],
     python_requires='>=3.5',
-    data_files=[("", ["LICENSE.txt"])],
     classifiers=[
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
