@@ -1,2 +1,3 @@
 include AutoROM/*.txt
 include AutoROM/test.rar
+include LICENSE.txt
