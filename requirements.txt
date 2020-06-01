@@ -1,4 +1,4 @@
-ale_py
+ale-py
 requests
 pyunpack
 tqdm

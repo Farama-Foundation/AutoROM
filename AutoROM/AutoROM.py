@@ -3,6 +3,7 @@ import requests
 import os
 import ale_py
 import multi_agent_ale_py
+import platform
 import zipfile
 import hashlib
 from pyunpack import Archive
@@ -16,19 +17,21 @@ def test_unrar(test_loc, test_file):
         os.remove(test_loc+"/README.md")
         return True
     except Exception as ex:
-        print(ex)
+        partial_ex_end = str(ex).find("patool error")
+        print(str(ex)[:partial_ex_end])
         return False
 
 # simply download rar file to specified dir
 def download_rar(install_dir):
-    print("Downloading ROMs")
     rar_link = "http://www.atarimania.com/roms/Roms.rar"
     downloaded_rar = requests.get(rar_link, stream=True)
     rar_file_title = install_dir + "ROMs.rar"
     rar_file = open(rar_file_title, "wb")
-    pbar = tqdm(unit="B", total=int(downloaded_rar.headers['Content-Length']))
-    for chunk in downloaded_rar.iter_content(chunk_size=1024):
-        pbar.update(len(chunk))
+    total_file_size = int(downloaded_rar.headers['Content-Length'])
+    download_chunk_size = 2**20
+    bars = int(total_file_size / download_chunk_size)
+    #pbar_format = "{percentage:3.0f}%|{bar}|{elapsed}{rate_fmt}{postfix}"
+    for chunk in tqdm(downloaded_rar.iter_content(chunk_size=download_chunk_size), total=bars, unit="MB", desc="Downloading ROMs"):
         rar_file.write(chunk)
     rar_file.close()
  
@@ -66,7 +69,6 @@ def transfer_rom_files(install_dir, checksum_map):
                     if not os.path.exists(game_subdir):
                         os.mkdir(game_subdir)
                     os.rename(os.path.join(subdir, file), os.path.join(game_subdir, checksum_map[d]))
-                    print("Installed: ", game_name)
                     del checksum_map[d]
 
 def clean_rar_files(install_dir):
@@ -100,7 +102,6 @@ def manual_downloads(install_dir, manual_map, checksum_map):
         os.remove(file_title)
         for sub in os.listdir(game_subdir):
             os.rename(game_subdir+sub, game_subdir+manual+".bin")
-        print("Installed: ", manual)
 
         hash_md5 = hashlib.md5()
         new_file = open(game_subdir+manual+".bin", "rb")
@@ -148,6 +149,11 @@ def main(license_accepted=False, specific=None):
     rar_installed = test_unrar(__location__, __location__ + "/test.rar")
     if not rar_installed:
         print("Unable to extract rar file, please make sure that you have unrar installed.")
+        print("unrar can be installed with the following command: ")
+        if platform.system() == "Darwin":
+            print("brew install unrar")
+        elif platform.system() == "Linux":
+            print("sudo apt-get install unrar")
         quit()
 
     print("AutoROM will download the Atari 2600 ROMs in link_map.txt from",
