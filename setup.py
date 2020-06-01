@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="AutoROM",
-    version="0.1.13",
+    version="0.1.14",
     author="PettingZoo Team",
     author_email="justinkterry@gmail.com",
     description="Automated installation of Atari ROMs for Gym/ALE-Py",
@@ -15,7 +15,7 @@ setuptools.setup(
     keywords=["Reinforcement Learning", "game", "RL", "AI", "gym"],
     packages=setuptools.find_packages(),
     install_requires=[
-        'ale_py',
+        'ale-py',
         'requests',
         'pyunpack',
         'tqdm',
