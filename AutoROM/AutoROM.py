@@ -210,12 +210,12 @@ def main(license_accepted=False, specific=None):
         if ans != "Y" and ans != "y":
             quit()
 
-    if not os.path.exists(installation_dir[0]):
-        os.mkdir(installation_dir[0])
+    if not os.path.exists(installation_dirs[0]):
+        os.mkdir(installation_dirs[0])
     else:
         print("Deleting existing ROM files.")
-        shutil.rmtree(installation_dir[0])
-        os.mkdir(installation_dir[0])
+        shutil.rmtree(installation_dirs[0])
+        os.mkdir(installation_dirs[0])
 
     download_rar(installation_dirs)
     extract_rar_content(installation_dirs)
