@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 import requests
 import os
-import ale_py
-import multi_agent_ale_py
 import platform
 import zipfile
 import hashlib
@@ -22,7 +20,8 @@ def test_unrar(test_loc, test_file):
         return False
 
 # simply download rar file to specified dir
-def download_rar(install_dir):
+def download_rar(installation_dirs):
+    install_dir = installation_dirs[0]
     rar_link = "http://www.atarimania.com/roms/Roms.rar"
     downloaded_rar = requests.get(rar_link, stream=True)
     rar_file_title = install_dir + "ROMs.rar"
@@ -36,10 +35,11 @@ def download_rar(install_dir):
     rar_file.close()
  
 # given the location of a ROMs.rar file, extract its contents into a singular folder
-def extract_rar_content(install_dir):
+def extract_rar_content(installation_dirs):
     # extract rar files
     # unzip each zip
     # calculate checksum of each RAR file
+    install_dir = installation_dirs[0]
     rar_file_title = install_dir + "ROMs.rar"
     rar_file = Archive(rar_file_title)
     if os.path.exists(install_dir + "ROMS.zip"):
@@ -51,9 +51,10 @@ def extract_rar_content(install_dir):
         zip_ref.extractall(zip_sub_dir)
     
 
-def transfer_rom_files(install_dir, checksum_map):
+def transfer_rom_files(installation_dirs, checksum_map):
     # go through every ROM in install_dir/delete/
     # if the ROM file matches a checksum, store in install dir
+    install_dir = installation_dirs[0]
     zip_dir = install_dir + "ROMS/"
     for subdir, _, files in os.walk(zip_dir):
         for file in files:
@@ -71,11 +72,12 @@ def transfer_rom_files(install_dir, checksum_map):
                     os.rename(os.path.join(subdir, file), os.path.join(game_subdir, checksum_map[d]))
                     del checksum_map[d]
 
-def clean_rar_files(install_dir):
+def clean_rar_files(installation_dirs):
     # delete Roms.rar
     # delete extracted HC ROMS.zip
     # delete extracted ROMS.zip
     # delete unzipped delete folder
+    install_dir = installation_dirs[0]
     if os.path.exists(os.path.join(install_dir, "ROMS.rar")):
         os.remove(os.path.join(install_dir, "ROMS.rar"))
     if os.path.exists(os.path.join(install_dir, "ROMS.zip")):
@@ -85,7 +87,8 @@ def clean_rar_files(install_dir):
     if os.path.exists(os.path.join(install_dir, "ROMS/")):
         shutil.rmtree(os.path.join(install_dir, "ROMS/"))
 
-def manual_downloads(install_dir, manual_map, checksum_map):
+def manual_downloads(installation_dirs, manual_map, checksum_map):
+    install_dir = installation_dirs[0]
     for manual in manual_map:
         link = manual_map[manual]
         download = requests.get(link)
@@ -116,11 +119,43 @@ def manual_downloads(install_dir, manual_map, checksum_map):
             print(d)
 
 def main(license_accepted=False, specific=None):
-    install_dir = ale_py.__file__
-    install_dir = install_dir[:-11] + "ROM/"
+    ale_installed = True
+    multi_ale_installed = True
+    try:
+        import ale_py
+    except ModuleNotFoundError:
+        ale_installed = False
+    try:
+        import multi_agent_ale_py
+    except ModuleNotFoundError:
+        multi_ale_installed = False
 
-    second_dir = multi_agent_ale_py.__file__
-    second_dir = second_dir[:-11] + "ROM/"
+
+    installation_dirs = []
+
+    if ale_installed:
+        install_dir = ale_py.__file__
+        if install_dir is not None:
+            install_dir = install_dir[:-11] + "ROM/"
+            installation_dirs.append(install_dir)
+        else:
+            ale_installed = False 
+    else:
+        install_dir = None 
+
+    if multi_ale_installed:
+        second_dir = multi_agent_ale_py.__file__
+        if second_dir is not None:
+            second_dir = second_dir[:-11] + "ROM/"
+            installation_dirs.append(second_dir)
+        else:
+            multi_ale_installed = False
+    else:
+        second_dir = None
+
+    if not ale_installed and not multi_ale_installed:
+        print("Neither ale_py or multi_ale_py installed, quitting.")
+        quit()
 
     __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
     new_link_file = "link_map.txt"
@@ -156,9 +191,16 @@ def main(license_accepted=False, specific=None):
             print("sudo apt-get install unrar")
         quit()
 
+    license_text = ""
+    if ale_installed:
+        license_text += install_dir + "\nfor use with ALE-Py (and Gym)."
+    if ale_installed and multi_ale_installed:
+        license_text += " and also\n"
+    if multi_ale_installed:
+        license_text += second_dir + "\nfor use with Multi-Agent-ALE-py."
     print("AutoROM will download the Atari 2600 ROMs in link_map.txt from",
-        "\natarimania.com and s2roms.cc, and put them into\n",
-        install_dir, " \nfor use with ALE-Py (and Gym).  They will also be installed into\n", second_dir, "\nfor use with Multi-Agent-ALE-py. Existing ROMS will be overwritten.")
+        "\natarimania.com and s2roms.cc. They will be installed to\n",
+        license_text, " Existing ROMS will be overwritten.")
     if not license_accepted:
         ans = input("I own a license to these Atari 2600 ROMs, agree not to "+
             "distribute these ROMS, \nagree to the terms of service for " +
@@ -175,20 +217,22 @@ def main(license_accepted=False, specific=None):
         shutil.rmtree(install_dir)
         os.mkdir(install_dir)
 
-    download_rar(install_dir)
-    extract_rar_content(install_dir)
-    transfer_rom_files(install_dir, checksum_map)
-    clean_rar_files(install_dir)
+    download_rar(installation_dirs)
+    extract_rar_content(installation_dirs)
+    transfer_rom_files(installation_dirs, checksum_map)
+    clean_rar_files(installation_dirs)
 
     # manual files since RAR has some mismatched hashes
     manual_map = {}
     manual_map["tetris"] = "https://s2roms.cc/s3roms/Atari%202600/P-T/Tetris%202600%20%28Colin%20Hughes%29.zip"
-    manual_downloads(install_dir, manual_map, checksum_map)
+    manual_downloads(installation_dirs, manual_map, checksum_map)
 
     # copy into second_dir
-    if os.path.exists(second_dir):
-        shutil.rmtree(second_dir)
-    shutil.copytree(install_dir, second_dir)
+    if len(installation_dirs) > 1:
+        for secondary in installation_dirs[1:]:
+            if os.path.exists(secondary):
+                shutil.rmtree(secondary)
+            shutil.copytree(installation_dirs[0], secondary)
 
     for ch in checksum_map:
         print("Missing: ", checksum_map[ch])
