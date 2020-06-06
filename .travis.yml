@@ -18,5 +18,5 @@ install:
   - pip3 install -r requirements.txt
 
 script:
-  - pip3 install ale-py
+  - pip3 install git+https://github.com/mgbellemare/Arcade-Learning-Environment.git
   - python3 AutoROM/smoke_test.py -i
