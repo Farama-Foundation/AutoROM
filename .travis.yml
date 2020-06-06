@@ -18,4 +18,5 @@ install:
   - pip3 install -r requirements.txt
 
 script:
+  - pip3 install ale-py
   - python3 AutoROM/smoke_test.py -i
