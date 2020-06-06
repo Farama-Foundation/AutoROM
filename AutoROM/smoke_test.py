@@ -1,8 +1,8 @@
-import ale_py
+import multi_agent_ale_py
 import os
 
 def main():
-    install_dir = ale_py.__file__
+    install_dir = multi_agent_ale_py.__file__
     install_dir = install_dir[:-11] + "ROM/"
 
     game_list = []
@@ -16,7 +16,7 @@ def main():
         game_name = install_dir + payload[0] + "/"+payload[0] + ".bin"
         game_list.append(game_name)
 
-    ale = ale_py.ALEInterface()
+    ale = multi_agent_ale_py.ALEInterface()
     for g in game_list:
         ale.loadROM(g)
 
