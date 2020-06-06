@@ -123,11 +123,11 @@ def main(license_accepted=False, specific=None):
     multi_ale_installed = True
     try:
         import ale_py
-    except ModuleNotFoundError:
+    except ImportError:
         ale_installed = False
     try:
         import multi_agent_ale_py
-    except ModuleNotFoundError:
+    except ImportError:
         multi_ale_installed = False
 
 
@@ -210,12 +210,12 @@ def main(license_accepted=False, specific=None):
         if ans != "Y" and ans != "y":
             quit()
 
-    if not os.path.exists(install_dir):
-        os.mkdir(install_dir)
+    if not os.path.exists(installation_dir[0]):
+        os.mkdir(installation_dir[0])
     else:
         print("Deleting existing ROM files.")
-        shutil.rmtree(install_dir)
-        os.mkdir(install_dir)
+        shutil.rmtree(installation_dir[0])
+        os.mkdir(installation_dir[0])
 
     download_rar(installation_dirs)
     extract_rar_content(installation_dirs)
