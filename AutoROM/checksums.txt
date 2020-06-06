@@ -90,7 +90,7 @@ a9531c763077464307086ec9a1fd057d superman.bin
 4d7517ae69f95cfbc053be01312b7dba surround.bin
 42cdd6a9e42a3639e190722b8ea3fc51 tennis.bin
 b0e1ee07fbc73493eac5651a52f90f00 tetris.bin
-0db4f4150fecf77e4ce72ca4d04c052f tictactoe3D.bin
+0db4f4150fecf77e4ce72ca4d04c052f tic_tac_toe_3D.bin
 fc2104dd2dadf9a6176c1c1c8f87ced9 time_pilot.bin
 fb27afe896e7c928089307b32e5642ee trondead.bin
 7a5463545dfb2dcfdafa6074b2f2c15e turmoil.bin
