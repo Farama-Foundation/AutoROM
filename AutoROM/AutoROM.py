@@ -15,8 +15,12 @@ def test_unrar(test_loc, test_file):
         os.remove(test_loc+"/README.md")
         return True
     except Exception as ex:
-        partial_ex_end = str(ex).find("patool error")
-        print(str(ex)[:partial_ex_end])
+        if "Permission denied" in str(ex):
+            print("Permission denied. Please retry with sudo AutoROM")
+            exit()
+        else:
+            partial_ex_end = str(ex).find("patool error")
+            print(str(ex)[:partial_ex_end])
         return False
 
 # simply download rar file to specified dir
