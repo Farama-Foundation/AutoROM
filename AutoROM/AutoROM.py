@@ -31,10 +31,10 @@ def download_rar(installation_dirs):
     rar_file_title = install_dir + "ROMs.rar"
     rar_file = open(rar_file_title, "wb")
     total_file_size = int(downloaded_rar.headers['Content-Length'])
-    download_chunk_size = 2**20
-    bars = int(total_file_size / download_chunk_size)
-    #pbar_format = "{percentage:3.0f}%|{bar}|{elapsed}{rate_fmt}{postfix}"
-    for chunk in tqdm(downloaded_rar.iter_content(chunk_size=download_chunk_size), total=bars, unit="MB", desc="Downloading ROMs"):
+    bars = 100
+    download_chunk_size = int(total_file_size / bars)
+    pbar_format = "{desc}:{percentage:3.0f}%|{bar}|{elapsed}{postfix}"
+    for chunk in tqdm(downloaded_rar.iter_content(chunk_size=download_chunk_size), bar_format=pbar_format, total=bars, desc="Downloading ROMs", leave=False):
         rar_file.write(chunk)
     rar_file.close()
  
@@ -217,7 +217,6 @@ def main(license_accepted=False, specific=None):
     if not os.path.exists(installation_dirs[0]):
         os.mkdir(installation_dirs[0])
     else:
-        print("Deleting existing ROM files.")
         shutil.rmtree(installation_dirs[0])
         os.mkdir(installation_dirs[0])
 
@@ -240,7 +239,7 @@ def main(license_accepted=False, specific=None):
 
     for ch in checksum_map:
         print("Missing: ", checksum_map[ch])
-
+    print("Done!")
 
 if __name__ == "__main__":
     import sys
