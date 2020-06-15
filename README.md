@@ -11,4 +11,17 @@ pip3 install autorom
 AutoROM
 ```
 
- The specific ROM websites AutoROM pulls from are atarimania.com and s2roms.cc.
+The specific ROM websites AutoROM pulls from are atarimania.com and s2roms.cc.
+
+If you want to cite this repo for some reason, the bibtex is:
+
+```
+@misc{autorom2020,
+  author = {Terry, Justin K and Jayakumar, Mario and Black, Benjamin},
+  title = {AutoROM},
+  year = {2020},
+  publisher = {GitHub},
+  note = {GitHub repository},
+  howpublished = {\url{https://github.com/PettingZoo-Team/AutoROM}}
+}
+```
