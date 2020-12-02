@@ -138,24 +138,24 @@ def main(license_accepted=False, specific_dir=None):
     installation_dirs = []
 
     if ale_installed:
-        install_dir = ale_py.__file__
-        if install_dir is not None:
-            install_dir = install_dir[:-11] + "ROM/"
-            installation_dirs.append(install_dir)
+        ale_install_dir = ale_py.__file__
+        if ale_install_dir is not None:
+            ale_install_dir = ale_install_dir[:-11] + "ROM/"
+            installation_dirs.append(ale_install_dir)
         else:
             ale_installed = False 
     else:
-        install_dir = None 
+        ale_install_dir = None 
 
     if multi_ale_installed:
-        second_dir = multi_agent_ale_py.__file__
-        if second_dir is not None:
-            second_dir = second_dir[:-11] + "ROM/"
-            installation_dirs.append(second_dir)
+        mulit_ale_install_dir = multi_agent_ale_py.__file__
+        if mulit_ale_install_dir  is not None:
+            mulit_ale_install_dir = mulit_ale_install_dir[:-11] + "ROM/"
+            installation_dirs.append(mulit_ale_install_dir)
         else:
             multi_ale_installed = False
     else:
-        second_dir = None
+        mulit_ale_install_dir = None
 
     if not ale_installed and not multi_ale_installed:
         print("Neither ale_py or multi_ale_py installed, quitting.")
@@ -164,8 +164,8 @@ def main(license_accepted=False, specific_dir=None):
     if specific_dir:
         dir_path = os.path.abspath(os.path.join(specific_dir, "ROM/")) + "/"
         installation_dirs = [dir_path]
-        install_dir = dir_path
-        second_dir = dir_path
+        ale_install_dir = dir_path
+        mulit_ale_install_dir = dir_path
 
     __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
     new_link_file = "link_map.txt"
@@ -203,11 +203,11 @@ def main(license_accepted=False, specific_dir=None):
 
     license_text = ""
     if ale_installed:
-        license_text += install_dir + "\nfor use with ALE-Py (and Gym)"
+        license_text += ale_install_dir + "\nfor use with ALE-Py (and Gym)"
     if ale_installed and multi_ale_installed:
         license_text += " and also\n\t"
     if multi_ale_installed:
-        license_text += second_dir + "\nfor use with Multi-Agent-ALE-py."
+        license_text += mulit_ale_install_dir + "\nfor use with Multi-Agent-ALE-py."
     print("AutoROM will download the Atari 2600 ROMs in link_map.txt from",
         "atarimania.com and s2roms.cc. \nThey will be installed to\n\t" + 
         license_text + " Existing ROMS will be overwritten.")
