@@ -122,7 +122,7 @@ def manual_downloads(installation_dirs, manual_map, checksum_map):
         else:
             print(d)
 
-def main(license_accepted=False, specific=None):
+def main(license_accepted=False, specific_dir=None):
     ale_installed = True
     multi_ale_installed = True
     try:
@@ -138,28 +138,34 @@ def main(license_accepted=False, specific=None):
     installation_dirs = []
 
     if ale_installed:
-        install_dir = ale_py.__file__
-        if install_dir is not None:
-            install_dir = install_dir[:-11] + "ROM/"
-            installation_dirs.append(install_dir)
+        ale_install_dir = ale_py.__file__
+        if ale_install_dir is not None:
+            ale_install_dir = ale_install_dir[:-11] + "ROM/"
+            installation_dirs.append(ale_install_dir)
         else:
             ale_installed = False 
     else:
-        install_dir = None 
+        ale_install_dir = None 
 
     if multi_ale_installed:
-        second_dir = multi_agent_ale_py.__file__
-        if second_dir is not None:
-            second_dir = second_dir[:-11] + "ROM/"
-            installation_dirs.append(second_dir)
+        mulit_ale_install_dir = multi_agent_ale_py.__file__
+        if mulit_ale_install_dir  is not None:
+            mulit_ale_install_dir = mulit_ale_install_dir[:-11] + "ROM/"
+            installation_dirs.append(mulit_ale_install_dir)
         else:
             multi_ale_installed = False
     else:
-        second_dir = None
+        mulit_ale_install_dir = None
 
     if not ale_installed and not multi_ale_installed:
         print("Neither ale_py or multi_ale_py installed, quitting.")
         quit()
+
+    if specific_dir:
+        dir_path = os.path.abspath(os.path.join(specific_dir, "ROM/")) + "/"
+        installation_dirs = [dir_path]
+        ale_install_dir = dir_path
+        mulit_ale_install_dir = dir_path
 
     __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
     new_link_file = "link_map.txt"
@@ -197,16 +203,16 @@ def main(license_accepted=False, specific=None):
 
     license_text = ""
     if ale_installed:
-        license_text += install_dir + "\nfor use with ALE-Py (and Gym)."
+        license_text += ale_install_dir + "\nfor use with ALE-Py (and Gym)"
     if ale_installed and multi_ale_installed:
-        license_text += " and also\n"
+        license_text += " and also\n\t"
     if multi_ale_installed:
-        license_text += second_dir + "\nfor use with Multi-Agent-ALE-py."
+        license_text += mulit_ale_install_dir + "\nfor use with Multi-Agent-ALE-py."
     print("AutoROM will download the Atari 2600 ROMs in link_map.txt from",
-        "\natarimania.com and s2roms.cc. They will be installed to\n",
-        license_text, " Existing ROMS will be overwritten.")
+        "atarimania.com and s2roms.cc. \nThey will be installed to\n\t" + 
+        license_text + " Existing ROMS will be overwritten.")
     if not license_accepted:
-        ans = input("I own a license to these Atari 2600 ROMs, agree not to "+
+        ans = input("\nI own a license to these Atari 2600 ROMs, agree not to "+
             "distribute these ROMS, \nagree to the terms of service for " +
             "atarimania.com and s2roms.cc, and wish to proceed (Y or N). ")
 
@@ -215,10 +221,10 @@ def main(license_accepted=False, specific=None):
             quit()
 
     if not os.path.exists(installation_dirs[0]):
-        os.mkdir(installation_dirs[0])
+        os.makedirs(installation_dirs[0])
     else:
         shutil.rmtree(installation_dirs[0])
-        os.mkdir(installation_dirs[0])
+        os.makedirs(installation_dirs[0])
 
     download_rar(installation_dirs)
     extract_rar_content(installation_dirs)
@@ -243,13 +249,16 @@ def main(license_accepted=False, specific=None):
 
 if __name__ == "__main__":
     import sys
-    license_accept = False
-    specific=None
-    if len(sys.argv) > 1:
-        if sys.argv[1] == "-v":
-            license_accept = True
-            if len(sys.argv) > 2:
-                specific = sys.argv[2]
-        else:
-            specific=sys.argv[1]
-    main(license_accept, specific)
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Process arguments")
+    parser.add_argument(
+        "-v", "--accept", action="store_true", help="Accept license agreement"
+    )
+    parser.add_argument(
+        "-d", "--dir", type=str, help="Installation directory"
+    )
+    parser.set_defaults(accept=False, dir=None)
+
+    args = parser.parse_args()
+    main(args.accept, specific_dir=args.dir)
