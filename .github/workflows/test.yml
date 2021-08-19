@@ -30,5 +30,5 @@ jobs:
         pip3 install -r requirements.txt
         pip3 install multi-agent-ale-py
         pip3 install .
-        AutoROM -d .
-        AutoROM
+        AutoROM -y -d .
+        AutoROM -y
