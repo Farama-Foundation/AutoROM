@@ -29,4 +29,6 @@ jobs:
         pip install cmake
         pip3 install -r requirements.txt
         pip3 install multi-agent-ale-py
-        python3 AutoROM/smoke_test.py -i
+        pip3 install .
+        AutoROM -d .
+        AutoROM
