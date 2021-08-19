@@ -136,19 +136,6 @@ def main(license_accepted=False, specific_dir=None):
         mulit_ale_install_dir = dir_path
 
     __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-    new_link_file = "link_map.txt"
-    f = open(os.path.join(__location__, new_link_file), "r")
-    extension_map = {}
-    final_map = {}
-    for x in f:
-        payload = x.split("^^^")
-        if len(payload[1]) > 1:
-            game_name = payload[0].strip()
-            game_url = payload[1].strip()
-            extension = ".zip"
-            final_map[game_name] = game_url
-            extension_map[game_name] = extension
-    f.close()
 
     checksum_file = "checksums.txt"
     ch = open(os.path.join(__location__, checksum_file), "rb")
