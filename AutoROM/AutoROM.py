@@ -6,26 +6,26 @@ import shutil
 import tarfile
 from tqdm import tqdm
 
-# simply download rar file to specified dir
-def download_rar(installation_dirs):
+# simply download tar file to specified dir
+def download_tar(installation_dirs):
     install_dir = installation_dirs[0]
-    rar_link = "https://roms8.s3.us-east-2.amazonaws.com/Roms.tar.gz"
-    downloaded_rar = requests.get(rar_link, stream=True)
-    rar_file_title = install_dir + "Roms.tar.gz"
-    rar_file = open(rar_file_title, "wb")
-    total_file_size = int(downloaded_rar.headers['Content-Length'])
+    tar_link = "https://roms8.s3.us-east-2.amazonaws.com/Roms.tar.gz"
+    downloaded_tar = requests.get(tar_link, stream=True)
+    tar_file_title = install_dir + "Roms.tar.gz"
+    tar_file = open(tar_file_title, "wb")
+    total_file_size = int(downloaded_tar.headers['Content-Length'])
     bars = 20
     download_chunk_size = int(total_file_size / bars)
     pbar_format = "{desc}:{percentage:3.0f}%|{bar}|{elapsed}{postfix}"
-    for chunk in tqdm(downloaded_rar.iter_content(chunk_size=download_chunk_size), bar_format=pbar_format, total=bars, desc="Downloading ROMs", leave=False):
-        rar_file.write(chunk)
-    rar_file.close()
+    for chunk in tqdm(downloaded_tar.iter_content(chunk_size=download_chunk_size), bar_format=pbar_format, total=bars, desc="Downloading ROMs", leave=False):
+        tar_file.write(chunk)
+    tar_file.close()
 
-# given the location of a ROMs.rar file, extract its contents into a singular folder
-def extract_rar_content(installation_dirs):
-    # extract rar files
+# given the location of a ROMs.tar file, extract its contents into a singular folder
+def extract_tar_content(installation_dirs):
+    # extract tar files
     # unzip each zip
-    # calculate checksum of each RAR file
+    # calculate checksum of each tar file
     install_dir = installation_dirs[0]
     with tarfile.open(install_dir+"Roms.tar.gz") as tar:
         tar.extractall(install_dir)
@@ -52,8 +52,8 @@ def transfer_rom_files(installation_dirs, checksum_map):
                     os.rename(os.path.join(subdir, file), os.path.join(game_subdir, checksum_map[d]))
                     del checksum_map[d]
 
-def clean_rar_files(installation_dirs):
-    # delete Roms.rar
+def clean_tar_files(installation_dirs):
+    # delete Roms.tar
     # delete extracted HC ROMS.zip
     # delete extracted ROMS.zip
     # delete unzipped delete folder
@@ -62,33 +62,6 @@ def clean_rar_files(installation_dirs):
         os.remove(os.path.join(install_dir, "Roms.tar.gz"))
     if os.path.exists(os.path.join(install_dir, "ROM/")):
         shutil.rmtree(os.path.join(install_dir, "ROM/"))
-
-def manual_downloads(installation_dirs, manual_map, checksum_map):
-    install_dir = installation_dirs[0]
-    for manual in manual_map:
-        link = manual_map[manual]
-        download = requests.get(link)
-        file_title = install_dir + manual + ".bin"
-        new_file = open(file_title, "wb")
-        new_file.write(download.content)
-        new_file.close()
-
-        game_subdir = install_dir+manual+"/"
-        if not os.path.exists(game_subdir):
-            os.mkdir(game_subdir)
-        os.rename(file_title, game_subdir+manual+".bin")
-
-        hash_md5 = hashlib.md5()
-        new_file = open(game_subdir+manual+".bin", "rb")
-        for chunk in iter(lambda: new_file.read(4096), b""):
-            hash_md5.update(chunk)
-        d = str(hash_md5.hexdigest())
-        new_file.close()
-
-        if d in checksum_map:
-            del checksum_map[d]
-        else:
-            print(d)
 
 def main(license_accepted=False, specific_dir=None):
     ale_installed = True
@@ -101,7 +74,6 @@ def main(license_accepted=False, specific_dir=None):
         import multi_agent_ale_py
     except ImportError:
         multi_ale_installed = False
-
 
     installation_dirs = []
 
@@ -170,15 +142,10 @@ def main(license_accepted=False, specific_dir=None):
         shutil.rmtree(installation_dirs[0])
         os.makedirs(installation_dirs[0])
 
-    download_rar(installation_dirs)
-    extract_rar_content(installation_dirs)
+    download_tar(installation_dirs)
+    extract_tar_content(installation_dirs)
     transfer_rom_files(installation_dirs, checksum_map)
-    clean_rar_files(installation_dirs)
-
-    # manual files since RAR has some mismatched hashes
-    manual_map = {}
-    manual_map["tetris"] = "https://roms8.s3.us-east-2.amazonaws.com/tetris.bin"
-    manual_downloads(installation_dirs, manual_map, checksum_map)
+    clean_tar_files(installation_dirs)
 
     # copy into second_dir
     if len(installation_dirs) > 1:
