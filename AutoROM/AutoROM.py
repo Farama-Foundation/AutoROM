@@ -166,13 +166,12 @@ def main(license_accepted=False, specific_dir=None):
         license_text += " and also\n\t"
     if multi_ale_installed:
         license_text += mulit_ale_install_dir + "\nfor use with Multi-Agent-ALE-py."
-    print("AutoROM will download the Atari 2600 ROMs in link_map.txt from",
-        "atarimania.com and s2roms.cc. \nThey will be installed to\n\t" +
+    print("AutoROM will download the Atari 2600 ROMs from",
+        ". \nThey will be installed to\n\t" +
         license_text + " Existing ROMS will be overwritten.")
     if not license_accepted:
         ans = input("\nI own a license to these Atari 2600 ROMs, agree not to "+
-            "distribute these ROMS, \nagree to the terms of service for " +
-            "atarimania.com and s2roms.cc, and wish to proceed (Y or N). ")
+            "distribute these ROMS, and wish to proceed (Y or N). ")
 
 
         if ans != "Y" and ans != "y":

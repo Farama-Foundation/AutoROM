@@ -17,8 +17,6 @@ AutoROM -d "/path/to/install"
 ```
 This will install ROMs at "/path/to/install/ROM/".
 
-The specific ROM websites AutoROM pulls from are atarimania.com and s2roms.cc.
-
 If you want to cite this repo for some reason, the bibtex is:
 
 ```
