@@ -11,9 +11,9 @@ pip3 install autorom
 AutoROM
 ```
 
-To specify a specific installation directory for your ROMs, use the `--dir` or `d` command line argument.
+To specify a specific installation directory for your ROMs, use the `--install-dir` command line flag.
 ```
-AutoROM -d "/path/to/install"
+AutoROM --install-dir /path/to/install
 ```
 This will install ROMs at "/path/to/install/ROM/".
 
