@@ -29,6 +29,7 @@ jobs:
         pip install cmake
         pip3 install -r requirements.txt
         pip3 install multi-agent-ale-py
+        pip3 install ale-py
         pip3 install .
-        AutoROM -h -d .
-        AutoROM -h
+        AutoROM --accept-license --install-dir .
+        AutoROM --accept-license

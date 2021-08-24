@@ -1,2 +1,4 @@
+click
 requests
 tqdm
+importlib-resources; python_version < '3.9'
