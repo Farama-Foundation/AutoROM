@@ -1,175 +1,188 @@
 #!/usr/bin/env python3
+import sys
 import requests
-import os
+import warnings
 import hashlib
-import shutil
 import tarfile
+import pathlib
+import click
+import io
+
+from collections import namedtuple
+
 from tqdm import tqdm
 
+if sys.version_info < (3, 9):
+    import importlib_resources as resources
+else:
+    import importlib.resources as resources
+
 # simply download tar file to specified dir
-def download_tar(installation_dirs):
-    install_dir = installation_dirs[0]
-    tar_link = "https://roms8.s3.us-east-2.amazonaws.com/Roms.tar.gz"
-    downloaded_tar = requests.get(tar_link, stream=True)
-    tar_file_title = install_dir + "Roms.tar.gz"
-    tar_file = open(tar_file_title, "wb")
-    total_file_size = int(downloaded_tar.headers['Content-Length'])
-    bars = 20
-    download_chunk_size = int(total_file_size / bars)
-    pbar_format = "{desc}:{percentage:3.0f}%|{bar}|{elapsed}{postfix}"
-    for chunk in tqdm(downloaded_tar.iter_content(chunk_size=download_chunk_size), bar_format=pbar_format, total=bars, desc="Downloading ROMs", leave=False):
-        tar_file.write(chunk)
-    tar_file.close()
+def download_tar_to_buffer(url="https://roms8.s3.us-east-2.amazonaws.com/Roms.tar.gz"):
+    with requests.get(url, stream=True) as response:
+        assert response.status_code == 200
+        assert response.headers["Content-Type"] == "application/x-gzip"
 
-# given the location of a ROMs.tar file, extract its contents into a singular folder
-def extract_tar_content(installation_dirs):
-    # extract tar files
-    # unzip each zip
-    # calculate checksum of each tar file
-    install_dir = installation_dirs[0]
-    with tarfile.open(install_dir+"Roms.tar.gz") as tar:
-        tar.extractall(install_dir)
+        archive_size = int(response.headers["Content-Length"])
+        assert archive_size > 0
+
+        chunk_size = 2 ** 10
+        with tqdm(
+            unit="B",
+            unit_scale=True,
+            unit_divisor=chunk_size,
+            desc="Downloading ROMs",
+            leave=False,
+            total=archive_size,
+        ) as pbar:
+            buffer = io.BytesIO()
+            for chunk in response.iter_content(chunk_size=chunk_size):
+                buffer.write(chunk)
+                pbar.update(len(chunk))
+
+            buffer.flush()
+            buffer.seek(0)
+            return buffer
 
 
-def transfer_rom_files(installation_dirs, checksum_map):
-    # go through every ROM in install_dir/delete/
-    # if the ROM file matches a checksum, store in install dir
-    install_dir = installation_dirs[0]
-    zip_dir = install_dir + "ROM/"
-    for subdir, _, files in os.walk(zip_dir):
-        for file in files:
-            hash_md5 = hashlib.md5()
-            with open(os.path.join(subdir, file), "rb") as f:
-                for chunk in iter(lambda: f.read(4096), b""):
-                    hash_md5.update(chunk)
-                d = str(hash_md5.hexdigest())
-                if d in checksum_map:
-                    # transfer file here to name in checksum map
-                    game_name = checksum_map[d][0:-4]
-                    game_subdir = install_dir+game_name+"/"
-                    if not os.path.exists(game_subdir):
-                        os.mkdir(game_subdir)
-                    os.rename(os.path.join(subdir, file), os.path.join(game_subdir, checksum_map[d]))
-                    del checksum_map[d]
+# Extract each valid ROM into each dir in installation_dirs
+def extract_roms_from_tar(buffer, packages, checksum_map):
+    with tarfile.open(fileobj=buffer) as tarfp:
+        for member in tarfp.getmembers():
+            if not (member.isfile() and member.name.endswith(".bin")):
+                continue
 
-def clean_tar_files(installation_dirs):
-    # delete Roms.tar
-    # delete extracted HC ROMS.zip
-    # delete extracted ROMS.zip
-    # delete unzipped delete folder
-    install_dir = installation_dirs[0]
-    if os.path.exists(os.path.join(install_dir, "Roms.tar.gz")):
-        os.remove(os.path.join(install_dir, "Roms.tar.gz"))
-    if os.path.exists(os.path.join(install_dir, "ROM/")):
-        shutil.rmtree(os.path.join(install_dir, "ROM/"))
+            # Read file from archive
+            fp = tarfp.extractfile(member)
+            bytes = fp.read()
 
-def main(license_accepted=False, specific_dir=None):
-    ale_installed = True
-    multi_ale_installed = True
-    try:
-        import ale_py
-    except ImportError:
-        ale_installed = False
-    try:
-        import multi_agent_ale_py
-    except ImportError:
-        multi_ale_installed = False
+            # Get hash
+            md5 = hashlib.md5()
+            md5.update(bytes)
+            hash = md5.hexdigest()
 
+            if hash not in checksum_map:
+                warnings.warn(f"File {member.name} not supported.")
+                continue
+
+            # Get filename from checksum map
+            file_name = checksum_map[hash]
+
+            # Write ROM to all output folders
+            for package in packages:
+                rom_path = package.path / file_name
+                with rom_path.open("wb") as romfp:
+                    romfp.write(bytes)
+                if not package.filter(str(rom_path)):
+                    rom_path.unlink()
+                    continue
+
+                print(f"Installed {rom_path}")
+
+            # Cross off this ROM
+            del checksum_map[hash]
+
+
+SupportedPackage = namedtuple("SupportedPackage", ["path", "filter"])
+
+
+def find_supported_packages():
     installation_dirs = []
 
-    if ale_installed:
-        ale_install_dir = ale_py.__file__
-        if ale_install_dir is not None:
-            ale_install_dir = ale_install_dir[:-11] + "ROM/"
-            installation_dirs.append(ale_install_dir)
-        else:
-            ale_installed = False
+    # Try and find ale-py
+    try:
+
+        # isSupportedROM filter. There's some multi-agent games that aren't supported in ale-py.
+        def _ale_py_filter(path):
+            from ale_py import ALEInterface
+
+            return ALEInterface.isSupportedROM(path) is not None
+
+        installation_dirs.append(
+            SupportedPackage(resources.files("ale_py") / "roms", _ale_py_filter)
+        )
+    except ModuleNotFoundError:
+        pass
+
+    # Try and find multi-agent-ale-py
+    try:
+        # Assume all ROMs are supported
+        installation_dirs.append(
+            SupportedPackage(
+                resources.files("multi_agent_ale_py") / "roms", lambda _: True
+            )
+        )
+    except ModuleNotFoundError:
+        pass
+
+    return installation_dirs
+
+
+@click.command()
+@click.option(
+    "--accept-license",
+    is_flag=True,
+    default=False,
+    type=bool,
+    help="Accept license agreement",
+)
+@click.option(
+    "--install-dir",
+    default=None,
+    type=click.Path(exists=True),
+    help="User specified install directory",
+)
+def main(accept_license, install_dir):
+    if install_dir is not None:
+        packages = [SupportedPackage(pathlib.Path(install_dir), lambda _: True)]
     else:
-        ale_install_dir = None
+        packages = find_supported_packages()
 
-    if multi_ale_installed:
-        mulit_ale_install_dir = multi_agent_ale_py.__file__
-        if mulit_ale_install_dir  is not None:
-            mulit_ale_install_dir = mulit_ale_install_dir[:-11] + "ROM/"
-            installation_dirs.append(mulit_ale_install_dir)
-        else:
-            multi_ale_installed = False
-    else:
-        mulit_ale_install_dir = None
-
-    if not ale_installed and not multi_ale_installed:
-        print("Neither ale_py or multi_ale_py installed, quitting.")
-        quit()
-
-    if specific_dir:
-        dir_path = os.path.abspath(os.path.join(specific_dir, "ROM/")) + "/"
-        installation_dirs = [dir_path]
-        ale_install_dir = dir_path
-        mulit_ale_install_dir = dir_path
-
-    __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-
-    checksum_file = "checksums.txt"
-    ch = open(os.path.join(__location__, checksum_file), "rb")
-    checksum_map = {}
-    for c in ch:
-        payload = c.split()
-        payload[1] = payload[1].decode("utf-8")
-        payload[0] = payload[0].decode("utf-8")
-        checksum_map[payload[0]] = payload[1]
-
-    license_text = ""
-    if ale_installed:
-        license_text += ale_install_dir + "\nfor use with ALE-Py (and Gym)"
-    if ale_installed and multi_ale_installed:
-        license_text += " and also\n\t"
-    if multi_ale_installed:
-        license_text += mulit_ale_install_dir + "\nfor use with Multi-Agent-ALE-py."
-    print("AutoROM will download the Atari 2600 ROMs from",
-        ". \nThey will be installed to\n\t" +
-        license_text + " Existing ROMS will be overwritten.")
-    if not license_accepted:
-        ans = input("\nI own a license to these Atari 2600 ROMs, agree not to "+
-            "distribute these ROMS, and wish to proceed (Y or N). ")
-
-
-        if ans != "Y" and ans != "y":
+        if len(packages) == 0:
+            print("Unable to find ale-py or multi-ale-py, quitting.")
             quit()
 
-    if not os.path.exists(installation_dirs[0]):
-        os.makedirs(installation_dirs[0])
-    else:
-        shutil.rmtree(installation_dirs[0])
-        os.makedirs(installation_dirs[0])
+    # Get checksums
+    with resources.path("AutoROM", "checksums.txt") as checksum_file:
+        with checksum_file.open(encoding="utf-8") as fp:
+            # Filter out comments
+            lines = filter(lambda line: not line.startswith("#"), fp.readlines())
+            # Generate checksum map
+            checksum_map = dict(map(lambda line: line.split(), lines))
 
-    download_tar(installation_dirs)
-    extract_tar_content(installation_dirs)
-    transfer_rom_files(installation_dirs, checksum_map)
-    clean_tar_files(installation_dirs)
+    print("AutoROM will download the Atari 2600 ROMs from.\nThey will be installed to:")
+    for package in packages:
+        print(f"\t{package.path.resolve()}")
+    print("\nExisting ROMs will be overwritten.")
 
-    # copy into second_dir
-    if len(installation_dirs) > 1:
-        for secondary in installation_dirs[1:]:
-            if os.path.exists(secondary):
-                shutil.rmtree(secondary)
-            shutil.copytree(installation_dirs[0], secondary)
+    if not accept_license:
+        license_msg = (
+            "\nI own a license to these Atari 2600 ROMs.\n"
+            "I agree to not distribute these ROMs and wish to proceed:"
+        )
+        if not click.confirm(license_msg, default=True):
+            quit()
 
-    for ch in checksum_map:
-        print("Missing: ", checksum_map[ch])
+    # Make sure directories exist
+    for package in packages:
+        if not package.path.exists():
+            package.path.mkdir()
+
+    try:
+        buffer = download_tar_to_buffer()
+        extract_roms_from_tar(buffer, packages, checksum_map)
+    except tarfile.ReadError:
+        print("Failed to read tar archive. Check your network connection?")
+        quit()
+    except requests.ConnectionError:
+        print("Network connection error. Check your network settings?")
+        quit()
+
+    # Print missing ROMs
+    for rom in checksum_map.values():
+        print(f"Missing: {rom}")
     print("Done!")
 
-if __name__ == "__main__":
-    import sys
-    import argparse
 
-    parser = argparse.ArgumentParser(description="Process arguments")
-    parser.add_argument(
-        "-v", "--accept", action="store_true", help="Accept license agreement"
-    )
-    parser.add_argument(
-        "-d", "--dir", type=str, help="Installation directory"
-    )
-    parser.set_defaults(accept=False, dir=None)
-
-    args = parser.parse_args()
-    main(args.accept, specific_dir=args.dir)
+if __name__ == '__main__':
+    main()
