@@ -15,10 +15,15 @@ setuptools.setup(
     keywords=["Reinforcement Learning", "game", "RL", "AI", "gym"],
     packages=setuptools.find_packages(),
     install_requires=[
-        'requests',
-        'tqdm',
+        "click",
+        "requests",
+        "tqdm",
+        'importlib-resources; python_version < "3.9"',
     ],
-    python_requires='>=3.6',
+    entry_points={
+        "console_scripts": ["AutoROM=AutoROM:main"],
+    },
+    python_requires=">=3.6",
     classifiers=[
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
@@ -27,6 +32,5 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    scripts=['bin/AutoROM'],
     include_package_data=True,
 )
