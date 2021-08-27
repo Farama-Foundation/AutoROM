@@ -46,7 +46,7 @@ def download_tar_to_buffer(url="https://roms8.s3.us-east-2.amazonaws.com/Roms.ta
 
 
 # Extract each valid ROM into each dir in installation_dirs
-def extract_roms_from_tar(buffer, packages, checksum_map):
+def extract_roms_from_tar(buffer, packages, checksum_map, quiet):
     with tarfile.open(fileobj=buffer) as tarfp:
         for member in tarfp.getmembers():
             if not (member.isfile() and member.name.endswith(".bin")):
@@ -66,24 +66,31 @@ def extract_roms_from_tar(buffer, packages, checksum_map):
                 continue
 
             # Get filename from checksum map
-            file_name = checksum_map[hash]
+            # Filenames are ROM.bin, get ROM
+            rom = checksum_map[hash]
 
             # Write ROM to all output folders
             for package in packages:
+                file_name = pathlib.Path(package.format.format(rom=rom))
                 rom_path = package.path / file_name
+
+                if not rom_path.parent.exists():
+                    rom_path.parent.mkdir(parents=True)
+
                 with rom_path.open("wb") as romfp:
                     romfp.write(bytes)
                 if not package.filter(str(rom_path)):
                     rom_path.unlink()
                     continue
 
-                print(f"Installed {rom_path}")
+                if not quiet:
+                    print(f"Installed {rom_path}")
 
             # Cross off this ROM
             del checksum_map[hash]
 
 
-SupportedPackage = namedtuple("SupportedPackage", ["path", "filter"])
+SupportedPackage = namedtuple("SupportedPackage", ["path", "format", "filter"])
 
 
 def find_supported_packages():
@@ -99,27 +106,41 @@ def find_supported_packages():
             return ALEInterface.isSupportedROM(path) is not None
 
         installation_dirs.append(
-            SupportedPackage(resources.files("ale_py") / "roms", _ale_py_filter)
+            SupportedPackage(
+                resources.files("ale_py") / "roms", "{rom}.bin", _ale_py_filter
+            )
         )
     except ModuleNotFoundError:
         pass
+    except TypeError:
+        warnings.warn(
+            "ale-py package seems to be empty. Perhaps try reinstalling ale-py."
+        )
 
     # Try and find multi-agent-ale-py
     try:
         # Assume all ROMs are supported
         installation_dirs.append(
             SupportedPackage(
-                resources.files("multi_agent_ale_py") / "roms", lambda _: True
+                resources.files("multi_agent_ale_py") / "roms",
+                "{rom}.bin",
+                lambda _: True,
             )
         )
     except ModuleNotFoundError:
         pass
+    except TypeError:
+        warnings.warn(
+            "multi-agent-ale-py package seems to be empty. Perhaps try reinstalling multi-agent-ale-py."
+        )
 
     return installation_dirs
 
 
 @click.command()
 @click.option(
+    "-v",
+    "-y",
     "--accept-license",
     is_flag=True,
     default=False,
@@ -127,14 +148,22 @@ def find_supported_packages():
     help="Accept license agreement",
 )
 @click.option(
+    "-d",
     "--install-dir",
     default=None,
     type=click.Path(exists=True),
     help="User specified install directory",
 )
-def main(accept_license, install_dir):
+@click.option(
+    "--quiet", is_flag=True, default=False, help="Suppress installation output."
+)
+def main(accept_license, install_dir, quiet):
     if install_dir is not None:
-        packages = [SupportedPackage(pathlib.Path(install_dir), lambda _: True)]
+        packages = [
+            SupportedPackage(
+                pathlib.Path(install_dir), "{rom}.bin", lambda _: True
+            )
+        ]
     else:
         packages = find_supported_packages()
 
@@ -150,7 +179,7 @@ def main(accept_license, install_dir):
             # Generate checksum map
             checksum_map = dict(map(lambda line: line.split(), lines))
 
-    print("AutoROM will download the Atari 2600 ROMs from.\nThey will be installed to:")
+    print("AutoROM will download the Atari 2600 ROMs.\nThey will be installed to:")
     for package in packages:
         print(f"\t{package.path.resolve()}")
     print("\nExisting ROMs will be overwritten.")
@@ -170,7 +199,7 @@ def main(accept_license, install_dir):
 
     try:
         buffer = download_tar_to_buffer()
-        extract_roms_from_tar(buffer, packages, checksum_map)
+        extract_roms_from_tar(buffer, packages, checksum_map, quiet)
     except tarfile.ReadError:
         print("Failed to read tar archive. Check your network connection?")
         quit()
@@ -184,5 +213,5 @@ def main(accept_license, install_dir):
     print("Done!")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
