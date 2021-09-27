@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -e
 
+# Get installation directory so we can remove ROMs between runs
+# They're located in ${INSTALL_DIR}/roms/*.bin
+INSTALL_DIR="$(python -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])')/AutoROM"
+
 # Test procedure
 test_autorom() {
   set -e
@@ -30,46 +34,40 @@ test_autorom() {
   popd && rm -r roms
 }
 
-# Get installation directory so we can remove ROMs between runs
-# They're located in ${INSTALL_DIR}/roms/*.bin
-INSTALL_DIR="$(python -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])')/AutoROM"
+
+test_cleanup() {
+  pip uninstall -y AutoROM > /dev/null 2>&1
+  pip uninstall -y AutoROM.accept-rom-license > /dev/null 2>&1
+  rm ${INSTALL_DIR}/roms/*.bin 2>/dev/null || true
+}
+
 
 # Install deps
 pip install multi-agent-ale-py ale-py
+pip install click requests tqdm
+
+./scripts/build-sdist.sh
 
 # Test local pip insall with installing to packages
-echo "::group::Test pip install"
+echo "::group::Test AutoROM CLI install"
+pip install --find-links dist/ --no-index --no-cache-dir AutoROM
 
-pip install . --verbose
 test_autorom -i
-pip uninstall -y AutoROM > /dev/null 2>&1
-rm ${INSTALL_DIR}/roms/*.bin 2>/dev/null || true
+test_cleanup
 echo "::endgroup::"
 
 # Test installing the source dist
-echo "::group::Test sdist install"
+echo "::group::Test AutoROM no install"
+pip install --find-links dist/ --no-index --no-cache-dir AutoROM
 
-./scripts/build-sdist.sh
-pushd dist
-pwd
-find * -type f -name "*.tar.gz" -exec sh -c \
-  'pip install $0 --verbose' {} +
-pwd
-popd
 test_autorom
-pip uninstall -y AutoROM > /dev/null 2>&1
-rm ${INSTALL_DIR}/roms/*.bin 2>/dev/null || true
+test_cleanup
 echo "::endgroup::"
 
 # Test installing the source dist when accepting the license
-echo "::group::Test sdist install [accept-rom-license]"
+echo "::group::Test AutoROM[accept-rom-license]"
+pip install --find-links dist/ --no-index --no-cache-dir AutoROM[accept-rom-license]
 
-./scripts/build-sdist.sh
-pushd dist
-find * -type f -name "*.tar.gz" -exec sh -c \
-  'pip install $0[accept-rom-license] --verbose' {} +
-popd
 test_autorom
-pip uninstall -y AutoROM AutoROM-licensed-roms > /dev/null 2>&1
-rm ${INSTALL_DIR}/roms/*.bin 2>/dev/null || true
+test_cleanup
 echo "::endgroup::"

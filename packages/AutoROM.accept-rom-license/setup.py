@@ -12,9 +12,8 @@ class InstallCommand(install):
         download_dir.mkdir(exist_ok=False, parents=True)
         AutoROM(True, download_dir, False)
 
+
 setuptools.setup(
-    name="AutoROM-licensed-roms",
-    version="0.3.0",
-    zip_safe=False,
+    name="AutoROM.accept-rom-license",
     cmdclass={"install": InstallCommand},
 )
