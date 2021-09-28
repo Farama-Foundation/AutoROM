@@ -9,7 +9,7 @@ mkdir -p dist
 
 # Build AutoROM
 pushd packages/AutoROM
-python -m build --sdist
+python -m build --sdist --wheel
 popd
 
 mv packages/AutoROM/dist/* dist/
