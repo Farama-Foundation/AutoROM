@@ -29,10 +29,10 @@ This command would download the ROMs during installation and make them immediate
 
 ## Packaging
 
-AutoROM requires that you package it as a source distribution. We have a special script to build all our source distributions, i.e., `./scripts/build-sdist.sh`. The resulting source distributions will be located in `dist/`. You can directly install this with `pip` even including the extra `accept-rom-license`. For example,
+AutoROM requires that you package it as a source distribution. We have a special script to build all our source distributions, i.e., `./scripts/build-dist.sh`. The resulting source distributions will be located in `dist/`. You can directly install this with `pip` even including the extra `accept-rom-license`. For example,
 
 ```
-pip install --find-links dist/ --no-index AutoROM[accept-rom-license]
+pip install --find-links dist/ --no-cache-dir AutoROM[accept-rom-license]
 ```
 
 ## Citing
