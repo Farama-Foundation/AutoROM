@@ -304,7 +304,7 @@ def main(accept_license, install_dir, quiet):
     # Create copy of checksum map which will be mutated
     checksum_map = dict(CHECKSUM_MAP)
     try:
-        tmp_file_name = download_tar_to_tempfile()
+        tmp_file_name = download_tar_to_tmp_file()
         extract_roms_from_tar(tmp_file_name, packages, checksum_map, quiet)
     except tarfile.ReadError:
         print("Failed to read tar archive. Check your network connection?")
