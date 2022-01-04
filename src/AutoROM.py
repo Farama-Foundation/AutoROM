@@ -6,17 +6,22 @@ import hashlib
 import tarfile
 import pathlib
 import click
-import io
+import os
+import tempfile
+import time
 
 from typing import Dict
 from collections import namedtuple
 
+import libtorrent as lt
 from tqdm import tqdm
 
 if sys.version_info < (3, 9):
     import importlib_resources as resources
 else:
     import importlib.resources as resources
+
+MAGNET_LINK="ADD MAGNET LINK HERE"
 
 CHECKSUM_MAP: Dict[str, str] = {
     "4b27f5397c442d25f0c418ccdacf1926": "adventure",
@@ -129,37 +134,61 @@ CHECKSUM_MAP: Dict[str, str] = {
     "eea0da9b987d661264cce69a7c13c3bd": "zaxxon",
 }
 
-# simply download tar file to specified dir
-def download_tar_to_buffer(url="https://roms8.s3.us-east-2.amazonaws.com/Roms.tar.gz"):
-    with requests.get(url, stream=True) as response:
-        assert response.status_code == 200
-        assert response.headers["Content-Type"] == "application/x-gzip"
 
-        archive_size = int(response.headers["Content-Length"])
-        assert archive_size > 0
+class ROMDownloadError(Exception):
+    pass
 
-        chunk_size = 2 ** 10
-        with tqdm(
-            unit="B",
-            unit_scale=True,
-            unit_divisor=chunk_size,
-            desc="Downloading ROMs",
-            leave=False,
-            total=archive_size,
-        ) as pbar:
-            buffer = io.BytesIO()
-            for chunk in response.iter_content(chunk_size=chunk_size):
-                buffer.write(chunk)
-                pbar.update(len(chunk))
 
-            buffer.flush()
-            buffer.seek(0)
-            return buffer
+# Download ROMs from a torrent magnet link
+def download_tar_to_tmp_file(timeout_seconds=120):
+    state_str = [
+        'queued',
+        'checking',
+        'downloading metadata',
+        'downloading',
+        'finished',
+        'seeding',
+        'unused enum',
+        'checking fastresume',
+    ]
+
+    ses = lt.session()
+    tmp_dir = tempfile.TemporaryDirectory()
+    params = lt.parse_magnet_uri(MAGNET_LINK)
+    params.save_path = tmp_dir.name
+    handle = ses.add_torrent(params)
+
+    pbar = tqdm(
+        unit="B",
+        unit_scale=True,
+        unit_divisor=1024,
+        desc="Downloading ROMs",
+        leave=False,
+        total=0, # the total download size is only known after downloading metadata
+    )
+    for _ in range(timeout_seconds):
+        status = handle.status()
+        if status.is_seeding:
+            break
+
+        pbar.set_description(state_str[status.state])
+        if status.total_wanted > 0 and status.total != pbar.total:
+            pbar.total = status.total_wanted
+
+        inc = status.total_wanted_done - pbar.n
+        pbar.update(n=inc)
+
+        time.sleep(1)
+    else:
+        raise ROMDownloadError("Download timed out")
+
+    return os.listdir(tmp_dir.name)[0]
+
 
 
 # Extract each valid ROM into each dir in installation_dirs
-def extract_roms_from_tar(buffer, packages, checksum_map, quiet):
-    with tarfile.open(fileobj=buffer) as tarfp:
+def extract_roms_from_tar(tmp_file_name, packages, checksum_map, quiet):
+    with tarfile.open(tmp_file_name) as tarfp:
         for member in tarfp.getmembers():
             if not (member.isfile() and member.name.endswith(".bin")):
                 continue
@@ -275,8 +304,8 @@ def main(accept_license, install_dir, quiet):
     # Create copy of checksum map which will be mutated
     checksum_map = dict(CHECKSUM_MAP)
     try:
-        buffer = download_tar_to_buffer()
-        extract_roms_from_tar(buffer, packages, checksum_map, quiet)
+        tmp_file_name = download_tar_to_tempfile()
+        extract_roms_from_tar(tmp_file_name, packages, checksum_map, quiet)
     except tarfile.ReadError:
         print("Failed to read tar archive. Check your network connection?")
         quit()
