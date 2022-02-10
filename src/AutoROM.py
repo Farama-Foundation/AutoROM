@@ -140,7 +140,7 @@ class ROMDownloadError(Exception):
 
 
 # Download ROMs from a torrent magnet link
-def download_tar_to_tmp_file(timeout_seconds=120):
+def download_tar_to_tmp_file(download_dir, timeout_seconds=120):
     state_str = [
         'queued',
         'checking',
@@ -153,9 +153,8 @@ def download_tar_to_tmp_file(timeout_seconds=120):
     ]
 
     ses = lt.session()
-    tmp_dir = tempfile.TemporaryDirectory()
     params = lt.parse_magnet_uri(MAGNET_LINK)
-    params.save_path = tmp_dir.name
+    params.save_path = download_dir
     handle = ses.add_torrent(params)
 
     pbar = tqdm(
@@ -182,8 +181,8 @@ def download_tar_to_tmp_file(timeout_seconds=120):
     else:
         raise ROMDownloadError("Download timed out")
 
-    return os.listdir(tmp_dir.name)[0]
-
+    file_info = handle.torrent_file()
+    return pathlib.Path(download_dir, file_info.files().file_name(0))
 
 
 # Extract each valid ROM into each dir in installation_dirs
@@ -303,15 +302,16 @@ def main(accept_license, install_dir, quiet):
 
     # Create copy of checksum map which will be mutated
     checksum_map = dict(CHECKSUM_MAP)
-    try:
-        tmp_file_name = download_tar_to_tmp_file()
-        extract_roms_from_tar(tmp_file_name, packages, checksum_map, quiet)
-    except tarfile.ReadError:
-        print("Failed to read tar archive. Check your network connection?")
-        quit()
-    except requests.ConnectionError:
-        print("Network connection error. Check your network settings?")
-        quit()
+    with tempfile.TemporaryDirectory() as download_dir:
+        try:
+            tmp_file_name = download_tar_to_tmp_file(download_dir.name)
+            extract_roms_from_tar(tmp_file_name, packages, checksum_map, quiet)
+        except tarfile.ReadError:
+            print("Failed to read tar archive. Check your network connection?")
+            quit()
+        except requests.ConnectionError:
+            print("Network connection error. Check your network settings?")
+            quit()
 
     # Print missing ROMs
     for rom in checksum_map.values():
