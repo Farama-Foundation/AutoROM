@@ -1,7 +1,9 @@
-# AutoROM
+<p align="center">
+    <img src="readme.png" width="500px"/>
+</p>
 
 
-This package automatically installs Atari ROM files for Atari-Py (which Gym Depends on), multi-agent-ALE (which PettingZoo depends on), and ALE-Py (which will replaced multi-agent-ALE and Atari-Py in the future).
+AutoROM automatically installs Atari ROM files for Atari-Py (which Gym Depends on), multi-agent-ALE (which PettingZoo depends on), and ALE-Py (which will replaced multi-agent-ALE and Atari-Py in the future).
 
 AutoROM automatically downloads the needed Atari ROMs from ROM hosting websites into the ALE-Py folder and Multi-Agent-ALE-py folder in a very simple manner:
 
