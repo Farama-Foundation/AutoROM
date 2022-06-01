@@ -304,7 +304,7 @@ def main(accept_license, install_dir, quiet):
     checksum_map = dict(CHECKSUM_MAP)
     with tempfile.TemporaryDirectory() as download_dir:
         try:
-            tmp_file_name = download_tar_to_tmp_file(download_dir.name)
+            tmp_file_name = download_tar_to_tmp_file(download_dir)
             extract_roms_from_tar(tmp_file_name, packages, checksum_map, quiet)
         except tarfile.ReadError:
             print("Failed to read tar archive. Check your network connection?")
