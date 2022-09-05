@@ -1,4 +1,4 @@
-name: Test AutoROM
+name: Test AutoROM Linux
 
 on:
   push:
