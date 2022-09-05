@@ -42,7 +42,7 @@ If you want to cite this repo for some reason, the bibtex is:
 
 ```
 @misc{autorom2020,
-  author = {Terry, Justin K and Jayakumar, Mario and Black, Benjamin},
+  author = {Terry, J K and Jayakumar, Mario and Black, Benjamin},
   title = {AutoROM},
   year = {2020},
   publisher = {GitHub},
