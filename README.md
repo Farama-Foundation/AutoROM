@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="readme.png" width="500px"/>
+    <img src="autorom-text.png" width="500px"/>
 </p>
 
 
