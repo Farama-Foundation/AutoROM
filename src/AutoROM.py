@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import wget
 import time
 import os
 import sys
@@ -136,8 +137,13 @@ CHECKSUM_MAP: Dict[str, str] = {
 
 def torrent_tar_to_buffer():
 
+
+
     save_path = os.path.dirname(__file__)
     save_file = os.path.join(save_path, "./Roms.tar.gz")
+
+    url = "https://raw.githubusercontent.com/jjshoots/AutoROM/master/resource/Roms.tar.gz.torrent"
+    wget.download(url=url, out=f"{save_file}.torrent")
 
     ses = lt.session()
 
