@@ -9,6 +9,6 @@ setuptools.setup(
         "console_scripts": ["AutoROM=AutoROM:cli"],
         "ale_py.roms": ["AutoROM=AutoROM.roms:export"],
     },
-    package_data={"AutoROM.roms": ["*.bin"], "Torrents": ["*.torrent"]},
+    package_data={"AutoROM.roms": ["*.bin"]},
     include_package_data=True,
 )

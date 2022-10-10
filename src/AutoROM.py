@@ -135,47 +135,40 @@ CHECKSUM_MAP: Dict[str, str] = {
 
 
 def torrent_tar_to_buffer():
+
+    save_path = os.path.dirname(__file__)
+    save_file = os.path.join(save_path, "./Roms.tar.gz")
+
     ses = lt.session()
-    ses.listen_on(6881, 6891)
 
-    tor_path = os.path.join(os.path.dirname(__file__), "./torrent/Roms.tar.gz.torrent")
-    info = lt.torrent_info(tor_path)
-    h = ses.add_torrent({"ti": info, "save_path": "./torrent/"})
+    info = lt.torrent_info(os.path.join(save_path, "./Roms.tar.gz.torrent"))
+    h = ses.add_torrent({"ti": info, "save_path": save_path})
 
-    buffer = io.BytesIO()
+    with tqdm(
+        unit="B",
+        desc="Downloading ROMs",
+        total=h.status().total_wanted,
+    ) as pbar:
+        while h.status().state != 5:
+            s = h.status()
 
-    while not h.is_seed():
-        s = h.status()
+            state_str = [
+                "queued",
+                "checking",
+                "downloading metadata",
+                "downloading",
+                "finished",
+                "seeding",
+                "allocating",
+                "checking fastresume",
+            ]
+            pbar.update(s.progress * 100)
 
-        state_str = [
-            "queued",
-            "checking",
-            "downloading metadata",
-            "downloading",
-            "finished",
-            "seeding",
-            "allocating",
-            "checking fastresume",
-        ]
-        print(
-            "\r%.2f%% complete (down: %.1f kb/s up: %.1f kB/s peers: %d) %s"
-            % (
-                s.progress * 100,
-                s.download_rate / 1000,
-                s.upload_rate / 1000,
-                s.num_peers,
-                state_str[s.state],
-            )
-        )
-        sys.stdout.flush()
-        time.sleep(1)
+            time.sleep(1)
 
-    with open(
-        os.path.join(os.path.dirname(__file__), "./torrent/Roms.tar.gz"), "rb"
-    ) as fh:
+    # read it as a buffer
+    with open(save_file, "rb") as fh:
         buffer = io.BytesIO(fh.read())
-
-    print(h.name(), "complete")
 
     return buffer
 
