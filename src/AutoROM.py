@@ -137,39 +137,29 @@ CHECKSUM_MAP: Dict[str, str] = {
 
 def torrent_tar_to_buffer():
 
-
-
+    # specify the save path
     save_path = os.path.dirname(__file__)
     save_file = os.path.join(save_path, "./Roms.tar.gz")
 
+    # download the torrent file from the github repo
     url = "https://raw.githubusercontent.com/jjshoots/AutoROM/master/resource/Roms.tar.gz.torrent"
     wget.download(url=url, out=f"{save_file}.torrent")
 
+    # start a libtorrent session
     ses = lt.session()
-
     info = lt.torrent_info(os.path.join(save_path, "./Roms.tar.gz.torrent"))
     h = ses.add_torrent({"ti": info, "save_path": save_path})
 
+    # download roms
     with tqdm(
         unit="B",
         desc="Downloading ROMs",
         total=h.status().total_wanted,
     ) as pbar:
         while h.status().state != 5:
-            s = h.status()
+            pbar.update(h.status().progress * 100)
 
-            state_str = [
-                "queued",
-                "checking",
-                "downloading metadata",
-                "downloading",
-                "finished",
-                "seeding",
-                "allocating",
-                "checking fastresume",
-            ]
-            pbar.update(s.progress * 100)
-
+            # some sleep helps
             time.sleep(1)
 
     # read it as a buffer
