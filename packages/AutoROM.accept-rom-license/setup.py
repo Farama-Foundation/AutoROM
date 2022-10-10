@@ -1,6 +1,6 @@
-import setuptools
 import pathlib
 
+import setuptools
 from setuptools.command.install import install
 
 

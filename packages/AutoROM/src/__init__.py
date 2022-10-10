@@ -1,1 +1,1 @@
-from .AutoROM import main, cli
+from .AutoROM import cli, main

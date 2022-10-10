@@ -1,20 +1,19 @@
 #!/usr/bin/env python3
-import time
-import os
-import sys
-import requests
-import warnings
 import hashlib
-import tarfile
-import pathlib
-import click
 import io
-
-import libtorrent as lt
-
-from typing import Dict
+import os
+import pathlib
+import sys
+import tarfile
+import tempfile
+import time
+import warnings
 from collections import namedtuple
+from typing import Dict
 
+import click
+import libtorrent as lt
+import requests
 from tqdm import tqdm
 
 if sys.version_info < (3, 9):
@@ -137,7 +136,7 @@ CHECKSUM_MAP: Dict[str, str] = {
 def torrent_tar_to_buffer():
 
     # specify the save path
-    save_path = os.path.dirname(__file__)
+    save_path = tempfile.TemporaryDirectory()
     save_file = os.path.join(save_path, "./Roms.tar.gz")
 
     # magnet uri
