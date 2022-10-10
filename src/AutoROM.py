@@ -150,16 +150,9 @@ def torrent_tar_to_buffer():
     handle = ses.add_torrent(params)
 
     # download roms
-    with tqdm(
-        unit="B",
-        desc="Downloading ROMs",
-        total=handle.status().total_wanted,
-    ) as pbar:
-        while handle.status().state != 5:
-            pbar.update(handle.status().progress * 100)
-
-            # some sleep helps
-            time.sleep(1)
+    while handle.status().state != 5:
+        # some sleep helps
+        time.sleep(1)
 
     # read it as a buffer
     with open(save_file, "rb") as fh:
