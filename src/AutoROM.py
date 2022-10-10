@@ -139,7 +139,6 @@ def torrent_tar_to_buffer():
     ses.listen_on(6881, 6891)
 
     tor_path = os.path.join(os.path.dirname(__file__), "./torrent/Roms.tar.gz.torrent")
-    print(tor_path)
     info = lt.torrent_info(tor_path)
     h = ses.add_torrent({"ti": info, "save_path": "./torrent/"})
 
@@ -171,12 +170,15 @@ def torrent_tar_to_buffer():
         sys.stdout.flush()
         time.sleep(1)
 
-    with open(os.path.join(os.path.dirname(__file__), "./torrent/Roms.tar.gz"), "rb") as fh:
+    with open(
+        os.path.join(os.path.dirname(__file__), "./torrent/Roms.tar.gz"), "rb"
+    ) as fh:
         buffer = io.BytesIO(fh.read())
 
     print(h.name(), "complete")
 
     return buffer
+
 
 # simply download tar file to specified dir
 def download_tar_to_buffer(url="https://roms8.s3.us-east-2.amazonaws.com/Roms.tar.gz"):
@@ -187,7 +189,7 @@ def download_tar_to_buffer(url="https://roms8.s3.us-east-2.amazonaws.com/Roms.ta
         archive_size = int(response.headers["Content-Length"])
         assert archive_size > 0
 
-        chunk_size = 2 ** 10
+        chunk_size = 2**10
         with tqdm(
             unit="B",
             unit_scale=True,

@@ -1,3 +1,2 @@
 graft *
 include *
-recursive-include *.torrent
