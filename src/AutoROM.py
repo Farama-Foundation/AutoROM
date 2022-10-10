@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import time
+import os
 import sys
 import requests
 import warnings
@@ -7,6 +9,8 @@ import tarfile
 import pathlib
 import click
 import io
+
+import libtorrent as lt
 
 from typing import Dict
 from collections import namedtuple
@@ -128,6 +132,51 @@ CHECKSUM_MAP: Dict[str, str] = {
     "c5930d0e8cdae3e037349bfa08e871be": "yars_revenge",
     "eea0da9b987d661264cce69a7c13c3bd": "zaxxon",
 }
+
+
+def torrent_tar_to_buffer():
+    ses = lt.session()
+    ses.listen_on(6881, 6891)
+
+    tor_path = os.path.join(os.path.dirname(__file__), "./torrent/Roms.tar.gz.torrent")
+    print(tor_path)
+    info = lt.torrent_info(tor_path)
+    h = ses.add_torrent({"ti": info, "save_path": "./torrent/"})
+
+    buffer = io.BytesIO()
+
+    while not h.is_seed():
+        s = h.status()
+
+        state_str = [
+            "queued",
+            "checking",
+            "downloading metadata",
+            "downloading",
+            "finished",
+            "seeding",
+            "allocating",
+            "checking fastresume",
+        ]
+        print(
+            "\r%.2f%% complete (down: %.1f kb/s up: %.1f kB/s peers: %d) %s"
+            % (
+                s.progress * 100,
+                s.download_rate / 1000,
+                s.upload_rate / 1000,
+                s.num_peers,
+                state_str[s.state],
+            )
+        )
+        sys.stdout.flush()
+        time.sleep(1)
+
+    with open(os.path.join(os.path.dirname(__file__), "./torrent/Roms.tar.gz"), "rb") as fh:
+        buffer = io.BytesIO(fh.read())
+
+    print(h.name(), "complete")
+
+    return buffer
 
 # simply download tar file to specified dir
 def download_tar_to_buffer(url="https://roms8.s3.us-east-2.amazonaws.com/Roms.tar.gz"):
@@ -275,7 +324,7 @@ def main(accept_license, install_dir, quiet):
     # Create copy of checksum map which will be mutated
     checksum_map = dict(CHECKSUM_MAP)
     try:
-        buffer = download_tar_to_buffer()
+        buffer = torrent_tar_to_buffer()
         extract_roms_from_tar(buffer, packages, checksum_map, quiet)
     except tarfile.ReadError:
         print("Failed to read tar archive. Check your network connection?")
