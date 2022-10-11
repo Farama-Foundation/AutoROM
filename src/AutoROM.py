@@ -164,34 +164,6 @@ def torrent_tar_to_buffer():
     return buffer
 
 
-# simply download tar file to specified dir
-def download_tar_to_buffer(url="https://roms8.s3.us-east-2.amazonaws.com/Roms.tar.gz"):
-    with requests.get(url, stream=True) as response:
-        assert response.status_code == 200
-        assert response.headers["Content-Type"] == "application/x-gzip"
-
-        archive_size = int(response.headers["Content-Length"])
-        assert archive_size > 0
-
-        chunk_size = 2**10
-        with tqdm(
-            unit="B",
-            unit_scale=True,
-            unit_divisor=chunk_size,
-            desc="Downloading ROMs",
-            leave=False,
-            total=archive_size,
-        ) as pbar:
-            buffer = io.BytesIO()
-            for chunk in response.iter_content(chunk_size=chunk_size):
-                buffer.write(chunk)
-                pbar.update(len(chunk))
-
-            buffer.flush()
-            buffer.seek(0)
-            return buffer
-
-
 # Extract each valid ROM into each dir in installation_dirs
 def extract_roms_from_tar(buffer, packages, checksum_map, quiet):
     with tarfile.open(fileobj=buffer) as tarfp:
