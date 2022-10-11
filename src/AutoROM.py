@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import tempfile
 import time
 import os
 import sys
