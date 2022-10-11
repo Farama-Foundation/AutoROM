@@ -150,7 +150,7 @@ def torrent_tar_to_buffer():
     params.save_path = save_path
     handle = ses.add_torrent(params)
 
-    # download roms
+    # download roms as long as state is not seeding
     while handle.status().state != 5:
         # some sleep helps
         time.sleep(1)
