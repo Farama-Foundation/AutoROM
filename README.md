@@ -35,18 +35,3 @@ AutoROM requires that you package it as a source distribution. We have a special
 ```
 pip install --find-links dist/ --no-cache-dir AutoROM[accept-rom-license]
 ```
-
-## Citing
-
-If you want to cite this repo for some reason, the bibtex is:
-
-```
-@misc{autorom2020,
-  author = {Terry, J K and Jayakumar, Mario and Black, Benjamin},
-  title = {AutoROM},
-  year = {2020},
-  publisher = {GitHub},
-  note = {GitHub repository},
-  howpublished = {\url{https://github.com/Farama-Foundation/AutoROM}}
-}
-```
