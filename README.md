@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="autorom-text.png" width="500px"/>
+    <img src="https://raw.githubusercontent.com/Farama-Foundation/AutoROM/master/autorom-text.png" width="500px"/>
 </p>
 
 
