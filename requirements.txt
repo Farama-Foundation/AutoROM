@@ -1,4 +1,5 @@
 click
 requests
 tqdm
+libtorrent
 importlib-resources; python_version < '3.9'
