@@ -13,8 +13,8 @@ import io
 if os.name == "nt":
     try:
         import libtorrent as lt
-    except ImportError:
-        print("It seems that you are trying to install the Atari ROMs on Windows. While this is not supported, the DLL error can be solved by installing the OpenSSL DLLs from: https://slproweb.com/products/Win32OpenSSL.html")
+    except ImportError as e:
+        raise ImportError("It seems that you are trying to install the Atari ROMs on Windows. While this is not supported, the DLL error can be solved by installing the OpenSSL DLLs from: https://slproweb.com/products/Win32OpenSSL.html") from e
 else:
     import libtorrent as lt
 
