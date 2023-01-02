@@ -10,7 +10,13 @@ import pathlib
 import click
 import io
 
-import libtorrent as lt
+if os.name == "nt":
+    try:
+        import libtorrent as lt
+    except ImportError:
+        print("It seems that you are trying to install the Atari ROMs on Windows. While this is not supported, the DLL error can be solved by installing the OpenSSL DLLs from: https://slproweb.com/products/Win32OpenSSL.html")
+else:
+    import libtorrent as lt
 
 from typing import Dict
 from collections import namedtuple
