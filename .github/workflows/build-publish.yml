@@ -1,0 +1,38 @@
+# This workflow will build and (if release) publish Python distributions to PyPI
+# For more information see:
+#   - https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+#   - https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/
+#
+
+name: build-publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  builds:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: python -m pip install --upgrade setuptools
+    - name: Build
+      run: ./build-dist.sh
+
+  publish:
+    runs-on: ubuntu-latest
+    needs:
+    - build-wheels
+    if: github.event_name == 'release' && github.event.action == 'published'
+    steps:
+    - name: Publish
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }}
