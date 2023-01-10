@@ -12,6 +12,7 @@ pip install autorom
 AutoROM
 ```
 > IMPORTANT: We do not have official support for Windows. However, if you are on Windows and encounter a DLL import error, you may need to install [OpenSSL v1.1.1S](https://slproweb.com/products/Win32OpenSSL.html).
+
 > IMPORTANT: Libtorrent, which AutoROM uses, requires pip version >20.0 to be installed. On M1 macs, this may require updating your pip installation.
 
 To specify a specific installation directory for your ROMs, use the `--install-dir` command line flag.
