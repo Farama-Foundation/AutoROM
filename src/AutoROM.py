@@ -158,7 +158,7 @@ def torrent_tar_to_buffer():
     success = False
     while not success:
         if tries > 2:
-            raise TimeoutError("Failed to download ROMs from torrent, please try again or report this issue.")
+            raise RuntimeError("Failed to download ROMs from torrent, please try again or report this issue.")
 
         try:
             tries += 1
