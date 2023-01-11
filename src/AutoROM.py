@@ -153,12 +153,32 @@ def torrent_tar_to_buffer():
     ses = lt.session()
     params = lt.parse_magnet_uri(uri)
     params.save_path = save_path
-    handle = ses.add_torrent(params)
 
-    # download roms as long as state is not seeding
-    while handle.status().state != 5:
-        # some sleep helps
-        time.sleep(1)
+    tries = 0
+    success = False
+    while not success:
+        if tries > 2:
+            raise TimeoutError("Failed to download ROMs from torrent, please try again or report this issue.")
+
+        try:
+            tries += 1
+            timeit = 0
+
+            # download roms as long as state is not seeding
+            handle = ses.add_torrent(params)
+            while handle.status().state != 5:
+                # some sleep helps
+                time.sleep(1)
+                timeit += 1
+
+                if timeit >= 20:
+                    raise TimeoutError("Took too long to download and reach seeding.")
+
+            success = True
+
+        except TimeoutError:
+            pass
+
 
     # read it as a buffer
     with open(save_file, "rb") as fh:
