@@ -15,6 +15,8 @@ AutoROM
 
 > IMPORTANT: Libtorrent, which AutoROM uses, requires pip version >20.0 to be installed. On M1 macs, this may require updating your pip installation.
 
+> IMPORTANT: For now, an alternative solution to the above known issues is to use AutoROM v0.4.2, which uses a different source for where the ROMs are sourced from.
+
 To specify a specific installation directory for your ROMs, use the `--install-dir` command line flag.
 ```
 AutoROM --install-dir /path/to/install
