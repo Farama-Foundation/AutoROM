@@ -176,7 +176,8 @@ def torrent_tar_to_buffer():
 
             success = True
 
-        except TimeoutError:
+        except TimeoutError as e:
+            print(e)
             pass
 
 
