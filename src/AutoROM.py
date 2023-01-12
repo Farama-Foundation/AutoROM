@@ -178,8 +178,6 @@ def torrent_tar_to_buffer():
 
         except TimeoutError as e:
             print(e)
-            pass
-
 
     # read it as a buffer
     with open(save_file, "rb") as fh:
