@@ -140,6 +140,17 @@ CHECKSUM_MAP: Dict[str, str] = {
 }
 
 
+status_meaning = {
+    1: "checking files",
+    2: "downloading metadata",
+    3: "download",
+    4: "finished",
+    5: "seeding",
+    6: "error, please report",
+    7: "checking resumedata"
+}
+
+
 def torrent_tar_to_buffer():
 
     # specify the save path
@@ -153,32 +164,32 @@ def torrent_tar_to_buffer():
     success = False
     while not success:
         if tries > 2:
-            raise RuntimeError("Failed to download ROMs from torrent, please try again or report this issue.")
+            raise RuntimeError("Tried to download ROMs 3 times, which have all failed, please try again or report this issue.")
 
-        try:
-            tries += 1
-            timeit = 0
+        tries += 1
 
-            # libtorrent params
-            ses = lt.session()
-            params = lt.parse_magnet_uri(uri)
-            params.save_path = save_path
-            handle = ses.add_torrent(params)
+        # libtorrent params
+        ses = lt.session()
+        params = lt.parse_magnet_uri(uri)
+        params.save_path = save_path
+        handle = ses.add_torrent(params)
 
-            # download roms as long as state is not seeding
-            while handle.status().state != 5:
-                # some sleep helps
-                time.sleep(1)
-                timeit += 1
+        # download roms as long as state is not seeding
+        timeit = 1
+        while handle.status().state not in {4, 5}:
+            # some sleep helps
+            time.sleep(1)
+            timeit += 1
 
-                if timeit >= 20:
-                    raise TimeoutError("Took too long to download and reach seeding.")
+            if timeit == 20:
+                print("Terminating attempt to download ROMs after 20 seconds, trying again", file=sys.stderr)
+                break
+            elif timeit % 5 == 0:
+                print(f"time={timeit}/20 seconds - Trying to download atari roms, "
+                      f"current status={status_meaning.get(handle.status().state, default='unknown')} ({handle.status().state})",
+                      file=sys.stderr)
 
-            success = True
-
-        except TimeoutError:
-            pass
-
+        success = handle.status().state == 5
 
     # read it as a buffer
     with open(save_file, "rb") as fh:
