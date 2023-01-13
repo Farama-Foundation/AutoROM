@@ -164,7 +164,7 @@ def torrent_tar_to_buffer():
     success = False
     while not success:
         if tries > 2:
-            raise RuntimeError("Tried to download ROMs 3 time, which have all failed, please try again or report this issue.")
+            raise RuntimeError("Tried to download ROMs 3 times, which have all failed, please try again or report this issue.")
 
         tries += 1
 
@@ -176,13 +176,13 @@ def torrent_tar_to_buffer():
 
         # download roms as long as state is not seeding
         timeit = 1
-        while handle.status().state != 5:
+        while handle.status().state not in {4, 5}:
             # some sleep helps
             time.sleep(1)
             timeit += 1
 
             if timeit == 20:
-                print("Terminating attempt to download ROMs, trying again", file=sys.stderr)
+                print("Terminating attempt to download ROMs after 20 seconds, trying again", file=sys.stderr)
                 break
             elif timeit % 5 == 0:
                 print(f"time={timeit}/20 seconds - Trying to download atari roms, "
