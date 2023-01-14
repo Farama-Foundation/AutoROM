@@ -186,7 +186,7 @@ def torrent_tar_to_buffer():
                 break
             elif timeit % 5 == 0:
                 print(f"time={timeit}/20 seconds - Trying to download atari roms, "
-                      f"current status={status_meaning.get(handle.status().state, default='unknown')} ({handle.status().state})",
+                      f"current status={status_meaning.get(handle.status().state, 'unknown')} ({handle.status().state})",
                       file=sys.stderr)
 
         success = handle.status().state == 5
