@@ -186,8 +186,10 @@ def torrent_tar_to_buffer():
                 print("Terminating attempt to download ROMs after 20 seconds, trying again", file=sys.stderr)
                 break
             elif timeit % 5 == 0:
+                status_id = handle.status().state
+                status = status_meaning[status_id] if status_id in status_meaning else "unknown"
                 print(f"time={timeit}/20 seconds - Trying to download atari roms, "
-                      f"current status={status_meaning.get(handle.status().state, 'unknown')} ({handle.status().state})",
+                      f"current status={status} ({status_id})",
                       file=sys.stderr)
 
         success = handle.status().state == 5
