@@ -175,22 +175,26 @@ def torrent_tar_to_buffer():
             status: lt.torrent_status = handle.status()
 
             # some sleep helps
-            time.sleep(0.2)
+            time.sleep(1.0)
             timeit += 1
 
-            if timeit == 100:
-                print("Terminating attempt to download ROMs after 20 seconds, trying again", file=sys.stderr)
+            if timeit >= 60:
+                print("Terminating attempt to download ROMs after 60 seconds, trying again", file=sys.stderr)
                 break
-            elif timeit % 25 == 0:
-                print(f"time={timeit / 5:.1f}/20 seconds - Trying to download atari roms\n"
+            elif timeit % 5 == 0:
+                print(f"time={timeit / 5:.1f}/60 seconds - Trying to download atari roms\n"
                       f"\tcurrent status={status_meaning.get(status.state, 'unknown')} ({status.state})\n"
                       f"\ttotal downloaded bytes={status.total_download}\n"
                       f"\ttotal payload download={status.total_payload_download}\n"
                       f"\ttotal failed bytes={status.total_failed_bytes}",
                       file=sys.stderr)
 
-        success = handle.status().state == 5
+        success = handle.status().state in {4, 5}
         tries += 1
+
+        # seed for 20 seconds to help the network
+        if handle.status().state in {4, 5}:
+            time.sleep(20.0)
 
         if tries >= 3:
             raise RuntimeError("Tried to download ROMs 3 times, which have all failed, please try again or report this issue.")
