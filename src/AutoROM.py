@@ -182,7 +182,7 @@ def torrent_tar_to_buffer():
                 print("Terminating attempt to download ROMs after 60 seconds, trying again", file=sys.stderr)
                 break
             elif timeit % 5 == 0:
-                print(f"time={timeit / 5:.1f}/60 seconds - Trying to download atari roms\n"
+                print(f"time={timeit}/60 seconds - Trying to download atari roms\n"
                       f"\tcurrent status={status_meaning.get(status.state, 'unknown')} ({status.state})\n"
                       f"\ttotal downloaded bytes={status.total_download}\n"
                       f"\ttotal payload download={status.total_payload_download}\n"
