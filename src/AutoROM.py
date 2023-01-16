@@ -170,7 +170,7 @@ def torrent_tar_to_buffer():
     timeit = 0
     while handle.status().state not in {4, 5}:
         if timeit >= 180:
-            raise RuntimeError("Terminating attempt to download ROMs after 180 seconds, trying again.")
+            raise RuntimeError("Terminating attempt to download ROMs after 180 seconds, this has failed, please report it.")
         elif timeit % 5 == 0:
             status: lt.torrent_status = handle.status()
             print(f"time={timeit}/180 seconds - Trying to download atari roms\n"
