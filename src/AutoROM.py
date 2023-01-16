@@ -184,9 +184,9 @@ def torrent_tar_to_buffer():
 
     # seed for 20 seconds to help the network
     if handle.status().state in {4, 5}:
-        print("Download complete, seeding for 20 seconds to assist torrent network.")
+        print("Download complete, seeding for 20 seconds to assist torrent network.", file=sys.stderr)
         time.sleep(20.0)
-        print("Seeding completed.")
+        print("Seeding completed.", file=sys.stderr)
 
     # read it as a buffer
     with open(save_file, "rb") as fh:
