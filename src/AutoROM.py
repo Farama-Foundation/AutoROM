@@ -21,8 +21,6 @@ else:
 from typing import Dict
 from collections import namedtuple
 
-from tqdm import tqdm
-
 if sys.version_info < (3, 9):
     import importlib_resources as resources
 else:
