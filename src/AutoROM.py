@@ -197,6 +197,23 @@ def torrent_tar_to_buffer():
 
     return buffer
 
+def verify_installation(package, checksum_keys):
+    for file in os.listdir(package):
+        if not file.endswith(".bin"):
+            continue
+
+        rom_path = os.path.join(package, file)
+        hash = hashlib.md5(open(rom_path,'rb').read()).hexdigest()
+
+        if not hash in checksum_keys:
+            return False
+
+        checksum_keys.remove(hash)
+
+    if len(checksum_keys) > 0:
+        return False
+
+    return True
 
 # Extract each valid ROM into each dir in installation_dirs
 def extract_roms_from_tar(buffer, packages, checksum_map, quiet):
@@ -316,6 +333,8 @@ def main(accept_license, install_dir, quiet):
     # Create copy of checksum map which will be mutated
     checksum_map = dict(CHECKSUM_MAP)
     try:
+        if all(verify_installation(package.path, list(checksum_map.keys())) for package in packages):
+            quit()
         buffer = torrent_tar_to_buffer()
         extract_roms_from_tar(buffer, packages, checksum_map, quiet)
     except tarfile.ReadError:
