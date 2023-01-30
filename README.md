@@ -27,7 +27,7 @@ AutoROM --accept-license
 ```
 OR when you are installing the Python package by specifying the extra `accept-rom-license`:
 ```
-pip install autorom[accept-rom-license]
+pip install "autorom[accept-rom-license]"
 ```
 This command would download the ROMs during installation and make them immediately discoverable to `ale-py`.
 
