@@ -149,8 +149,7 @@ status_meaning = {
 }
 
 
-def torrent_tar_to_buffer():
-
+def torrent_tar():
     # specify the save path
     save_path = os.path.dirname(__file__)
     save_file = os.path.join(save_path, "./Roms.tar.gz")
@@ -188,14 +187,7 @@ def torrent_tar_to_buffer():
         time.sleep(20.0)
         print("Seeding completed.", file=sys.stderr)
 
-    # read it as a buffer
-    with open(save_file, "rb") as fh:
-        buffer = io.BytesIO(fh.read())
-
-    # delete the download
-    os.remove(save_file)
-
-    return buffer
+    return save_file
 
 def verify_installation(package, checksum_keys):
     for file in os.listdir(package):
@@ -298,7 +290,7 @@ def find_supported_packages():
     return installation_dirs
 
 
-def main(accept_license, install_dir, quiet):
+def main(accept_license, source_file, install_dir, quiet):
     if install_dir is not None:
         packages = [
             SupportedPackage(pathlib.Path(install_dir), "{rom}.bin", lambda _: True)
@@ -333,8 +325,11 @@ def main(accept_license, install_dir, quiet):
     try:
         if all([verify_installation(package.path, checksum_map.keys())] for package in packages):
             quit()
-        buffer = torrent_tar_to_buffer()
-        extract_roms_from_tar(buffer, packages, checksum_map, quiet)
+
+        source_file = torrent_tar() if source_file is None else source_file
+        with open(source_file, "rb") as fh:
+            buffer = io.BytesIO(fh.read())
+            extract_roms_from_tar(buffer, packages, checksum_map, quiet)
     except tarfile.ReadError:
         print("Failed to read tar archive. Check your network connection?")
         quit()
@@ -366,10 +361,17 @@ def main(accept_license, install_dir, quiet):
     help="User specified install directory",
 )
 @click.option(
+    "-s",
+    "--source-file",
+    default=None,
+    type=click.Path(exists=True),
+    help="Use specified .tar.gz source file",
+)
+@click.option(
     "--quiet", is_flag=True, default=False, help="Suppress installation output."
 )
-def cli(accept_license, install_dir, quiet):
-    main(accept_license, install_dir, quiet)
+def cli(accept_license, source_dir, install_dir, quiet):
+    main(accept_license, source_dir, install_dir, quiet)
 
 
 if __name__ == "__main__":
