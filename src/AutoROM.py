@@ -341,10 +341,10 @@ def main(accept_license, source_file, install_dir, quiet):
         ):
             quit()
 
-        source_file = torrent_tar() if source_file is None else source_file
-        with open(source_file, "rb") as fh:
+        with open(torrent_tar() if source_file is None else source_file, "rb") as fh:
             buffer = io.BytesIO(fh.read())
             extract_roms_from_tar(buffer, packages, checksum_map, quiet)
+
     except tarfile.ReadError:
         if source_file is None:
             print("Failed to read tar archive. Check your network connection?")
@@ -369,21 +369,21 @@ def main(accept_license, source_file, install_dir, quiet):
     is_flag=True,
     default=False,
     type=bool,
-    help="Accept license agreement",
+    help="Accept license agreement.",
 )
 @click.option(
     "-d",
     "--install-dir",
     default=None,
     type=click.Path(exists=True),
-    help="User specified install directory",
+    help="User specified install directory.",
 )
 @click.option(
     "-s",
     "--source-file",
     default=None,
     type=click.Path(exists=True),
-    help="Use specified .tar.gz source file",
+    help="User specified .tar.gz source file.",
 )
 @click.option(
     "--quiet", is_flag=True, default=False, help="Suppress installation output."
