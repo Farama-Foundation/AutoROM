@@ -12,7 +12,7 @@ class InstallCommand(install):
 
         download_dir = pathlib.Path(self.install_lib) / "AutoROM" / "roms"
         download_dir.mkdir(exist_ok=False, parents=True)
-        AutoROM(True, download_dir, False)
+        AutoROM(True, download_dir, None, False)
 
 
 setuptools.setup(
