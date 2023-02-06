@@ -370,8 +370,8 @@ def main(accept_license, source_file, install_dir, quiet):
 @click.option(
     "--quiet", is_flag=True, default=False, help="Suppress installation output."
 )
-def cli(accept_license, source_dir, install_dir, quiet):
-    main(accept_license, source_dir, install_dir, quiet)
+def cli(accept_license, source_file, install_dir, quiet):
+    main(accept_license, source_file, install_dir, quiet)
 
 
 if __name__ == "__main__":
