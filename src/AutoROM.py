@@ -346,7 +346,10 @@ def main(accept_license, source_file, install_dir, quiet):
             buffer = io.BytesIO(fh.read())
             extract_roms_from_tar(buffer, packages, checksum_map, quiet)
     except tarfile.ReadError:
-        print("Failed to read tar archive. Check your network connection?")
+        if source_file is None:
+            print("Failed to read tar archive. Check your network connection?")
+        else:
+            print("Failed to read tar archive. Verify your source file?")
         quit()
     except requests.ConnectionError:
         print("Network connection error. Check your network settings?")
