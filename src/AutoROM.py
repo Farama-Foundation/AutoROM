@@ -1,25 +1,28 @@
 #!/usr/bin/env python3
-import time
-import os
-import sys
-import requests
-import warnings
 import hashlib
-import tarfile
-import pathlib
-import click
 import io
+import os
+import pathlib
+import sys
+import tarfile
+import time
+import warnings
+
+import click
+import requests
 
 if os.name == "nt":
     try:
         import libtorrent as lt
     except ImportError as e:
-        raise ImportError("It seems that you are trying to install the Atari ROMs on Windows. While this is not supported, the DLL error can be solved by installing the OpenSSL DLLs from: https://slproweb.com/products/Win32OpenSSL.html") from e
+        raise ImportError(
+            "It seems that you are trying to install the Atari ROMs on Windows. While this is not supported, the DLL error can be solved by installing the OpenSSL DLLs from: https://slproweb.com/products/Win32OpenSSL.html"
+        ) from e
 else:
     import libtorrent as lt
 
-from typing import Dict
 from collections import namedtuple
+from typing import Dict
 
 if sys.version_info < (3, 9):
     import importlib_resources as resources
@@ -145,7 +148,7 @@ status_meaning = {
     4: "finished",
     5: "seeding",
     6: "error, please report",
-    7: "checking resumedata"
+    7: "checking resumedata",
 }
 
 
@@ -167,15 +170,19 @@ def torrent_tar():
     timeit = 0
     while handle.status().state not in {4, 5}:
         if timeit >= 180:
-            raise RuntimeError("Terminating attempt to download ROMs after 180 seconds, this has failed, please report it.")
+            raise RuntimeError(
+                "Terminating attempt to download ROMs after 180 seconds, this has failed, please report it."
+            )
         elif timeit % 5 == 0:
             status: lt.torrent_status = handle.status()
-            print(f"time={timeit}/180 seconds - Trying to download atari roms\n"
-                  f"\tcurrent status={status_meaning.get(status.state, 'unknown')} ({status.state})\n"
-                  f"\ttotal downloaded bytes={status.total_download}\n"
-                  f"\ttotal payload download={status.total_payload_download}\n"
-                  f"\ttotal failed bytes={status.total_failed_bytes}",
-                  file=sys.stderr)
+            print(
+                f"time={timeit}/180 seconds - Trying to download atari roms\n"
+                f"\tcurrent status={status_meaning.get(status.state, 'unknown')} ({status.state})\n"
+                f"\ttotal downloaded bytes={status.total_download}\n"
+                f"\ttotal payload download={status.total_payload_download}\n"
+                f"\ttotal failed bytes={status.total_failed_bytes}",
+                file=sys.stderr,
+            )
 
         # some sleep helps
         time.sleep(1.0)
@@ -183,11 +190,15 @@ def torrent_tar():
 
     # seed for 20 seconds to help the network
     if handle.status().state in {4, 5}:
-        print("Download complete, seeding for 20 seconds to assist torrent network.", file=sys.stderr)
+        print(
+            "Download complete, seeding for 20 seconds to assist torrent network.",
+            file=sys.stderr,
+        )
         time.sleep(20.0)
         print("Seeding completed.", file=sys.stderr)
 
     return save_file
+
 
 def verify_installation(package, checksum_keys):
     for file in os.listdir(package):
@@ -196,7 +207,7 @@ def verify_installation(package, checksum_keys):
             continue
 
         rom_path = os.path.join(package, file)
-        hash = hashlib.md5(open(rom_path,'rb').read()).hexdigest()
+        hash = hashlib.md5(open(rom_path, "rb").read()).hexdigest()
 
         if not hash in checksum_keys:
             return False
@@ -204,6 +215,7 @@ def verify_installation(package, checksum_keys):
         checksum_keys.remove(hash)
 
     return len(checksum_keys) == 0
+
 
 # Extract each valid ROM into each dir in installation_dirs
 def extract_roms_from_tar(buffer, packages, checksum_map, quiet):
@@ -323,7 +335,10 @@ def main(accept_license, source_file, install_dir, quiet):
     # Create copy of checksum map which will be mutated
     checksum_map = dict(CHECKSUM_MAP)
     try:
-        if all([verify_installation(package.path, checksum_map.keys())] for package in packages):
+        if all(
+            [verify_installation(package.path, checksum_map.keys())]
+            for package in packages
+        ):
             quit()
 
         source_file = torrent_tar() if source_file is None else source_file
