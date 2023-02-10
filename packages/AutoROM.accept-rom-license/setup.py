@@ -11,7 +11,7 @@ class InstallCommand(install):
         from AutoROM import main as AutoROM
 
         download_dir = pathlib.Path(self.install_lib) / "AutoROM" / "roms"
-        download_dir.mkdir(exist_ok=False, parents=True)
+        download_dir.mkdir(exist_ok=True, parents=True)
         AutoROM(True, None, download_dir, False)
 
 
