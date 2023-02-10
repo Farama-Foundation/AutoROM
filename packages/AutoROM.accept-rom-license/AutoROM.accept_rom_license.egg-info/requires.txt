@@ -1,0 +1,10 @@
+click
+requests
+libtorrent
+
+[:python_version < "3.9"]
+importlib-resources
+
+[tests]
+ale_py
+multi_agent_ale_py
