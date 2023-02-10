@@ -47,7 +47,7 @@ test_autorom() {
 
 ./scripts/build-dist.sh
 
-# Test local pip insall with installing to packages
+# Test local pip install with installing to packages
 echo "::group::Test AutoROM CLI install"
 test_init
 
