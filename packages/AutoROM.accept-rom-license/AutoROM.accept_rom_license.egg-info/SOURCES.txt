@@ -1,0 +1,15 @@
+AutoROM.py
+LICENSE.txt
+MANIFEST.in
+README.md
+pyproject.toml
+setup.cfg
+setup.py
+version.txt
+AutoROM.accept_rom_license.egg-info/PKG-INFO
+AutoROM.accept_rom_license.egg-info/SOURCES.txt
+AutoROM.accept_rom_license.egg-info/dependency_links.txt
+AutoROM.accept_rom_license.egg-info/not-zip-safe
+AutoROM.accept_rom_license.egg-info/requires.txt
+AutoROM.accept_rom_license.egg-info/top_level.txt
+__pycache__/AutoROM.cpython-310.pyc
