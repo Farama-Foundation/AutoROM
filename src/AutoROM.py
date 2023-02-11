@@ -336,7 +336,7 @@ def main(accept_license, source_file, install_dir, quiet):
     checksum_map = dict(CHECKSUM_MAP)
     try:
         if all(
-            [verify_installation(package.path, checksum_map.keys())]
+            [verify_installation(package.path, list(checksum_map.keys()))]
             for package in packages
         ):
             quit()
