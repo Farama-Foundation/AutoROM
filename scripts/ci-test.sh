@@ -19,29 +19,35 @@ test_cleanup() {
 # Test procedure
 test_autorom() {
   set -e
+
   # Get install flag
   local install_to_pkgs=false
-  while getopts 'i' opt; do
+  local pretorrented=false
+  while getopts 'ip' opt; do
     case $opt in
         i) install_to_pkgs=true ;;
+        p) pretorrented=true ;;
     esac
   done
 
-  # Work in roms directory
+  # work in new directory
   mkdir -p roms && pushd roms
 
-  # Install locally
-  AutoROM --accept-license --install-dir . && ls -l
-
-  # Conditionally install to packages
   if [ "$install_to_pkgs" = true ]; then
+    # conditionally install to packages
     AutoROM --accept-license
+  elif [ "$pretorrented" = true ]; then
+    # conditionally test using pretorrented
+    AutoROM --accept-license --source-file ../scripts/Roms.tar.gz
+  else
+    # generic install
+    AutoROM --accept-license --install-dir .
   fi
 
   # Print ROMs the ALE can find
   python -c "import ale_py.roms as roms; print(roms.__all__)"
 
-  # Cleanup
+  # cleanup
   popd && rm -r roms
 }
 
@@ -72,5 +78,15 @@ test_init
 pip install --find-links dist/ --no-cache-dir AutoROM[accept-rom-license]
 
 test_autorom
+test_cleanup
+echo "::endgroup::"
+
+# Test installing using pre-torrented tar
+echo "::group::Test AutoROM[accept-rom-license]"
+test_init
+pip install --find-links dist/ --no-cache-dir AutoROM
+python ./scripts/torrent_tar.py
+
+test_autorom -p
 test_cleanup
 echo "::endgroup::"
