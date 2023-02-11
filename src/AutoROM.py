@@ -169,14 +169,21 @@ def torrent_tar():
     # download roms as long as state is not seeding
     timeit = 0
     while handle.status().state not in {4, 5}:
-        if timeit >= 180:
+        if timeit >= 360:
             raise RuntimeError(
                 "Terminating attempt to download ROMs after 180 seconds, this has failed, please report it."
             )
-        elif timeit % 5 == 0:
+
+        if timeit % 5 == 0:
+            if timeit >= 180:
+                print(
+                    "Have been attempting to download for more than 180 seconds, consider terminating?",
+                    file=sys.stderr,
+                )
+
             status: lt.torrent_status = handle.status()
             print(
-                f"time={timeit}/180 seconds - Trying to download atari roms\n"
+                f"time={timeit} / 180 seconds - Trying to download atari roms\n"
                 f"\tcurrent status={status_meaning.get(status.state, 'unknown')} ({status.state})\n"
                 f"\ttotal downloaded bytes={status.total_download}\n"
                 f"\ttotal payload download={status.total_payload_download}\n"
