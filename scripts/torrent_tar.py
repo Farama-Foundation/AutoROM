@@ -45,4 +45,3 @@ def torrent_tar():
 
 if __name__ == "__main__":
     print(torrent_tar())
-    print("asdfasdfdsf")
