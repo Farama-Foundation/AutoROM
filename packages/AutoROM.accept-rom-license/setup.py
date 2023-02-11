@@ -8,11 +8,11 @@ class InstallCommand(install):
     def run(self):
         super().run()
 
-        from AutoROM import main as AutoROM
+        from AutoROM import main
 
         download_dir = pathlib.Path(self.install_lib) / "AutoROM" / "roms"
         download_dir.mkdir(exist_ok=True, parents=True)
-        AutoROM(True, None, download_dir, False)
+        main(True, None, download_dir, False)
 
 
 setuptools.setup(
