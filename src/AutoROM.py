@@ -311,8 +311,7 @@ def main(accept_license, source_file, install_dir, quiet):
         packages = find_supported_packages()
 
         if len(packages) == 0:
-            print("Unable to find ale-py or multi-ale-py, quitting.")
-            quit()
+            raise LookupError("Unable to find ale-py or multi-ale-py, quitting.")
 
     print("AutoROM will download the Atari 2600 ROMs.\nThey will be installed to:")
     for package in packages:
@@ -325,7 +324,7 @@ def main(accept_license, source_file, install_dir, quiet):
             "I agree to not distribute these ROMs and wish to proceed:"
         )
         if not click.confirm(license_msg, default=True):
-            quit()
+            return
 
     # Make sure directories exist
     for package in packages:
@@ -339,7 +338,7 @@ def main(accept_license, source_file, install_dir, quiet):
             [verify_installation(package.path, list(checksum_map.keys()))]
             for package in packages
         ):
-            quit()
+            return
 
         with open(torrent_tar() if source_file is None else source_file, "rb") as fh:
             buffer = io.BytesIO(fh.read())
@@ -350,10 +349,10 @@ def main(accept_license, source_file, install_dir, quiet):
             print("Failed to read tar archive. Check your network connection?")
         else:
             print("Failed to read tar archive. Verify your source file?")
-        quit()
+        return
     except requests.ConnectionError:
         print("Network connection error. Check your network settings?")
-        quit()
+        return
 
     # Print missing ROMs
     for rom in checksum_map.values():
@@ -394,4 +393,4 @@ def cli(accept_license, source_file, install_dir, quiet):
 
 if __name__ == "__main__":
     cli()
-    # torrent_tar_to_buffer()
+    # main(True, None, None, False)
