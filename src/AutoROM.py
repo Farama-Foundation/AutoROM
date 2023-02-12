@@ -1,25 +1,28 @@
 #!/usr/bin/env python3
-import time
-import os
-import sys
-import requests
-import warnings
 import hashlib
-import tarfile
-import pathlib
-import click
 import io
+import os
+import pathlib
+import sys
+import tarfile
+import time
+import warnings
+
+import click
+import requests
 
 if os.name == "nt":
     try:
         import libtorrent as lt
     except ImportError as e:
-        raise ImportError("It seems that you are trying to install the Atari ROMs on Windows. While this is not supported, the DLL error can be solved by installing the OpenSSL DLLs from: https://slproweb.com/products/Win32OpenSSL.html") from e
+        raise ImportError(
+            "It seems that you are trying to install the Atari ROMs on Windows. While this is not supported, the DLL error can be solved by installing the OpenSSL DLLs from: https://slproweb.com/products/Win32OpenSSL.html"
+        ) from e
 else:
     import libtorrent as lt
 
-from typing import Dict
 from collections import namedtuple
+from typing import Dict
 
 if sys.version_info < (3, 9):
     import importlib_resources as resources
@@ -145,12 +148,11 @@ status_meaning = {
     4: "finished",
     5: "seeding",
     6: "error, please report",
-    7: "checking resumedata"
+    7: "checking resumedata",
 }
 
 
-def torrent_tar_to_buffer():
-
+def torrent_tar():
     # specify the save path
     save_path = os.path.dirname(__file__)
     save_file = os.path.join(save_path, "./Roms.tar.gz")
@@ -167,16 +169,27 @@ def torrent_tar_to_buffer():
     # download roms as long as state is not seeding
     timeit = 0
     while handle.status().state not in {4, 5}:
-        if timeit >= 180:
-            raise RuntimeError("Terminating attempt to download ROMs after 180 seconds, this has failed, please report it.")
-        elif timeit % 5 == 0:
+        if timeit >= 360:
+            raise RuntimeError(
+                "Terminating attempt to download ROMs after 180 seconds, this has failed, please report it."
+            )
+
+        if timeit % 5 == 0:
+            if timeit >= 180:
+                print(
+                    "Have been attempting to download for more than 180 seconds, consider terminating?",
+                    file=sys.stderr,
+                )
+
             status: lt.torrent_status = handle.status()
-            print(f"time={timeit}/180 seconds - Trying to download atari roms\n"
-                  f"\tcurrent status={status_meaning.get(status.state, 'unknown')} ({status.state})\n"
-                  f"\ttotal downloaded bytes={status.total_download}\n"
-                  f"\ttotal payload download={status.total_payload_download}\n"
-                  f"\ttotal failed bytes={status.total_failed_bytes}",
-                  file=sys.stderr)
+            print(
+                f"time={timeit} / 180 seconds - Trying to download atari roms\n"
+                f"\tcurrent status={status_meaning.get(status.state, 'unknown')} ({status.state})\n"
+                f"\ttotal downloaded bytes={status.total_download}\n"
+                f"\ttotal payload download={status.total_payload_download}\n"
+                f"\ttotal failed bytes={status.total_failed_bytes}",
+                file=sys.stderr,
+            )
 
         # some sleep helps
         time.sleep(1.0)
@@ -184,18 +197,15 @@ def torrent_tar_to_buffer():
 
     # seed for 20 seconds to help the network
     if handle.status().state in {4, 5}:
-        print("Download complete, seeding for 20 seconds to assist torrent network.", file=sys.stderr)
+        print(
+            "Download complete, seeding for 20 seconds to assist torrent network.",
+            file=sys.stderr,
+        )
         time.sleep(20.0)
         print("Seeding completed.", file=sys.stderr)
 
-    # read it as a buffer
-    with open(save_file, "rb") as fh:
-        buffer = io.BytesIO(fh.read())
+    return save_file
 
-    # delete the download
-    os.remove(save_file)
-
-    return buffer
 
 def verify_installation(package, checksum_keys):
     for file in os.listdir(package):
@@ -204,7 +214,7 @@ def verify_installation(package, checksum_keys):
             continue
 
         rom_path = os.path.join(package, file)
-        hash = hashlib.md5(open(rom_path,'rb').read()).hexdigest()
+        hash = hashlib.md5(open(rom_path, "rb").read()).hexdigest()
 
         if not hash in checksum_keys:
             return False
@@ -212,6 +222,7 @@ def verify_installation(package, checksum_keys):
         checksum_keys.remove(hash)
 
     return len(checksum_keys) == 0
+
 
 # Extract each valid ROM into each dir in installation_dirs
 def extract_roms_from_tar(buffer, packages, checksum_map, quiet):
@@ -298,7 +309,7 @@ def find_supported_packages():
     return installation_dirs
 
 
-def main(accept_license, install_dir, quiet):
+def main(accept_license, source_file, install_dir, quiet):
     if install_dir is not None:
         packages = [
             SupportedPackage(pathlib.Path(install_dir), "{rom}.bin", lambda _: True)
@@ -307,8 +318,7 @@ def main(accept_license, install_dir, quiet):
         packages = find_supported_packages()
 
         if len(packages) == 0:
-            print("Unable to find ale-py or multi-ale-py, quitting.")
-            quit()
+            raise LookupError("Unable to find ale-py or multi-ale-py, quitting.")
 
     print("AutoROM will download the Atari 2600 ROMs.\nThey will be installed to:")
     for package in packages:
@@ -321,7 +331,7 @@ def main(accept_license, install_dir, quiet):
             "I agree to not distribute these ROMs and wish to proceed:"
         )
         if not click.confirm(license_msg, default=True):
-            quit()
+            return
 
     # Make sure directories exist
     for package in packages:
@@ -331,16 +341,25 @@ def main(accept_license, install_dir, quiet):
     # Create copy of checksum map which will be mutated
     checksum_map = dict(CHECKSUM_MAP)
     try:
-        if all([verify_installation(package.path, checksum_map.keys())] for package in packages):
-            quit()
-        buffer = torrent_tar_to_buffer()
-        extract_roms_from_tar(buffer, packages, checksum_map, quiet)
+        if all(
+            verify_installation(package.path, list(checksum_map.keys()))
+            for package in packages
+        ):
+            return
+
+        with open(torrent_tar() if source_file is None else source_file, "rb") as fh:
+            buffer = io.BytesIO(fh.read())
+            extract_roms_from_tar(buffer, packages, checksum_map, quiet)
+
     except tarfile.ReadError:
-        print("Failed to read tar archive. Check your network connection?")
-        quit()
+        if source_file is None:
+            print("Failed to read tar archive. Check your network connection?")
+        else:
+            print("Failed to read tar archive. Verify your source file?")
+        return
     except requests.ConnectionError:
         print("Network connection error. Check your network settings?")
-        quit()
+        return
 
     # Print missing ROMs
     for rom in checksum_map.values():
@@ -356,22 +375,29 @@ def main(accept_license, install_dir, quiet):
     is_flag=True,
     default=False,
     type=bool,
-    help="Accept license agreement",
+    help="Accept license agreement.",
 )
 @click.option(
     "-d",
     "--install-dir",
     default=None,
     type=click.Path(exists=True),
-    help="User specified install directory",
+    help="User specified install directory.",
+)
+@click.option(
+    "-s",
+    "--source-file",
+    default=None,
+    type=click.Path(exists=True),
+    help="User specified .tar.gz source file.",
 )
 @click.option(
     "--quiet", is_flag=True, default=False, help="Suppress installation output."
 )
-def cli(accept_license, install_dir, quiet):
-    main(accept_license, install_dir, quiet)
+def cli(accept_license, source_file, install_dir, quiet):
+    main(accept_license, source_file, install_dir, quiet)
 
 
 if __name__ == "__main__":
     cli()
-    # torrent_tar_to_buffer()
+    # main(True, None, None, False)

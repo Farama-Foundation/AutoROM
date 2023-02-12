@@ -13,8 +13,10 @@ AutoROM
 ```
 > IMPORTANT: We do not have official support for Windows. However, if you are on Windows and encounter a DLL import error, you may need to install [OpenSSL v1.1.1S](https://slproweb.com/products/Win32OpenSSL.html).
 
-> IMPORTANT: For now, an alternative solution to the above known issues is to use AutoROM v0.4.2, which uses a different source for where the ROMs are sourced from.
-
+If you encounter problems with installation due to your network blocking torrenting, it is possible to install the ROMs using a pre-downloaded roms.tar.gz file.
+```
+AutoROM --source-file /path/to/roms.tar.gz
+```
 To specify a specific installation directory for your ROMs, use the `--install-dir` command line flag.
 ```
 AutoROM --install-dir /path/to/install

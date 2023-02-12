@@ -1,5 +1,6 @@
+venv/
 *.pyc
 __pycache__/
 dist/
 build/
-AutoROM.egg-info/
+*.egg-info/
