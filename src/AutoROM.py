@@ -209,7 +209,6 @@ def torrent_tar():
 
 def verify_installation(package, checksum_keys):
     for file in os.listdir(package):
-        print(file)
         if not file.endswith(".bin"):
             continue
 
