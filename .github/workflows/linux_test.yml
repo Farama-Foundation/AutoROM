@@ -39,4 +39,4 @@ jobs:
         DECRYPTION_KEY: ${{ secrets.AUTOROM_DECRYPTION_KEY }}
       run: |
         ./resource/alternate_download.sh
-        AutoROM --accept-license --source-file Roms.tar.gz
+        # AutoROM --accept-license --source-file Roms.tar.gz
