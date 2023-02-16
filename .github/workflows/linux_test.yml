@@ -38,7 +38,7 @@ jobs:
         # DECRYPTION_KEY: ${{ secrets.AUTOROM_DECRYPTION_KEY }}
         DECRYPTION_KEY: ${{ secrets.DUMMY_KEY }}
       run: |
-        echo $env.DUMMY_KEY
+        echo ${{ env.DUMMY_KEY }}
         exit
         wget https://raw.githubusercontent.com/jjshoots/AutoROM/master/resource/Roms.tar.gz.b64.enc
         openssl aes-256-cbc -a -salt -pass pass:$DECRYPTION_KEY -in Roms.tar.gz.b64.enc -out Roms.tar.gz.b64 -d
