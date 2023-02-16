@@ -35,6 +35,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Decrypt Roms.tar.gz
       env:
+        DUMMY_KEY: ${{ secrets.DUMMY_KEY }}
         DECRYPTION_KEY: ${{ secrets.AUTOROM_DECRYPTION_KEY }}
       run: |
         ./resource/alternate_download.sh
