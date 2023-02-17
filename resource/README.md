@@ -9,7 +9,7 @@ To get Roms from AutoROM in CI tests for other repositories without using torren
   env:
     ROMS_B64_LINK: ${{ secrets.ROMS_B64_LINK }}
   run: |
-    wget "$ROMS_B64_LINK"
+    wget $ROMS_B64_LINK
     base64 Roms.tar.gz.b64 --decode &> Roms.tar.gz
     AutoROM --accept-license --source-file Roms.tar.gz
 ```
