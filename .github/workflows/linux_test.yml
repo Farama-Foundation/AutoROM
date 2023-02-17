@@ -40,7 +40,7 @@ jobs:
       run: |
         echo $DUMMY_KEY | base64 &> test.txt
         cp test.txt test2.txt
-        cat test2.txt | base64 -d
+        cat test2.txt
 
         wget https://raw.githubusercontent.com/jjshoots/AutoROM/master/resource/Roms.tar.gz.b64.enc
         openssl aes-256-cbc -a -salt -pass pass:$DECRYPTION_KEY -in Roms.tar.gz.b64.enc -out Roms.tar.gz.b64 -d
