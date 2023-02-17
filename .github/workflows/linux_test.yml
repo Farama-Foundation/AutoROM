@@ -39,7 +39,7 @@ jobs:
         DECRYPTION_KEY: ${{ secrets.AUTOROM_DECRYPTION_KEY }}
       run: |
         echo -n $DUMMY_KEY | base64
-        echo -n "1234" | base64
+        echo -n "12345" | base64
 
         wget https://raw.githubusercontent.com/jjshoots/AutoROM/master/resource/Roms.tar.gz.b64.enc
         openssl aes-256-cbc -a -salt -pass pass:$DECRYPTION_KEY -in Roms.tar.gz.b64.enc -out Roms.tar.gz.b64 -d
