@@ -37,7 +37,10 @@ jobs:
       env:
         ROMS_B64_LINK: ${{ secrets.ROMS_B64_LINK }}
       run: |
-        echo "$(base64 $BASE_B64_LINK)"
+        echo "$(base64 $BASE_B64_LINK)" &> something.txt
+        cp something.txt something_else.txt
+        cat something_else.txt
+
         wget "$ROMS_B64_LINK"
         base64 Roms.tar.gz.b64 --decode &> Roms.tar.gz
         pip install packages/*
