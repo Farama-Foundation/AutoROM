@@ -38,11 +38,7 @@ jobs:
         DUMMY_KEY: ${{ secrets.DUMMY_KEY }}
         DECRYPTION_KEY: ${{ secrets.AUTOROM_DECRYPTION_KEY }}
       run: |
-        if [ $DUMMY_KEY == "1234"]; then
-          echo "True"
-        else
-          echo "False"
-        fi
+        echo "$(base64 $DUMMY_KEY)"
 
         wget https://raw.githubusercontent.com/jjshoots/AutoROM/master/resource/Roms.tar.gz.b64.enc
         openssl aes-256-cbc -a -salt -pass pass:$DECRYPTION_KEY -in Roms.tar.gz.b64.enc -out Roms.tar.gz.b64 -d
