@@ -51,6 +51,6 @@ jobs:
         fi
 
         wget https://raw.githubusercontent.com/jjshoots/AutoROM/master/resource/Roms.tar.gz.b64.enc
-        openssl enc -d -aes-256-cbc -md sha256 -in Roms.tar.gz.b64.enc -out Roms.tar.gz.b64 -k $DECRYPTION_KEY
+        openssl enc -d -aes-256-cbc -md sha256 -in Roms.tar.gz.b64.enc -out Roms.tar.gz.b64 -k 1
         base64 Roms.tar.gz.b64 --decode &> Roms.tar.gz
         AutoROM --accept-license --source-file Roms.tar.gz
