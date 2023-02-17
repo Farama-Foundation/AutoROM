@@ -19,11 +19,15 @@ To get Roms from AutoROM in CI tests for other repositories without using torren
 
 ### Encryption
 
-1. `openssl enc -e -aes-256-cbc -md sha256 -in Roms.tar.gz -out Roms.tar.gz.enc -k "$DECRYPTION_KEY"`
-2. `base64 Roms.tar.gz.enc &> Roms.tar.gz.enc.b64`
+```
+openssl enc -e -aes-256-cbc -md sha256 -pbkdf2 -iter 1000 -in Roms.tar.gz -out Roms.tar.gz.enc -k "$DECRYPTION_KEY"
+base64 Roms.tar.gz.enc &> Roms.tar.gz.enc.b64
+```
 
 ### Decryption
 
-2. `base64 Roms.tar.gz.enc.b64 --decode &> Roms.tar.gz.enc`
-1. `openssl enc -d -aes-256-cbc -md sha256 -in Roms.tar.gz.enc -out Roms.tar.gz -k "$DECRYPTION_KEY"`
+```
+base64 Roms.tar.gz.enc.b64 --decode &> Roms.tar.gz.enc
+openssl enc -d -aes-256-cbc -md sha256 -pbkdf2 -ter 1000 -in Roms.tar.gz.enc -out Roms.tar.gz -k "$DECRYPTION_KEY"
+```
 
