@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  test:
+  autorom-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -21,3 +21,23 @@ jobs:
     - name: Test AutoROM
       run: |
         ./scripts/ci-test.sh
+
+  decrypt-roms-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.7', '3.8', '3.9', '3.10']
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Decrypt Roms.tar.gz
+      env:
+        ROMS_B64_LINK: ${{ secrets.ROMS_B64_LINK }}
+      run: |
+        wget "$ROMS_B64_LINK"
+        base64 Roms.tar.gz.b64 --decode &> Roms.tar.gz
+        pip install packages/*
+        AutoROM --accept-license --source-file Roms.tar.gz
