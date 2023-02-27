@@ -309,6 +309,17 @@ def find_supported_packages():
 
 
 def main(accept_license, source_file, install_dir, quiet):
+
+    try:
+        import pkg_resources
+        from farama_notifications import notifications
+
+        __version__ = pkg_resources.get_distribution("autorom").version
+        if "autorom" in notifications and __version__ in notifications["autorom"]:
+            print(notifications["autorom"][__version__], file=sys.stderr)
+    except Exception:  # nosec
+        pass
+
     if install_dir is not None:
         packages = [
             SupportedPackage(pathlib.Path(install_dir), "{rom}.bin", lambda _: True)
