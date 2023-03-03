@@ -175,8 +175,8 @@ def torrent_tar():
                 "Try these lines instead:"
                 "-------------------------\n"
                 "wget https://gist.githubusercontent.com/jjshoots/61b22aefce4456920ba99f2c36906eda/raw/00046ac3403768bfe45857610a3d333b8e35e026/Roms.tar.gz.b64\n"
-                "base64 Roms.tar.gz.b64 --decode &> Roms.tar.gz\n",
-                "AutoROM --accept-license --source-file Roms.tar.gz\n",
+                "base64 Roms.tar.gz.b64 --decode &> Roms.tar.gz\n"
+                "AutoROM --accept-license --source-file Roms.tar.gz\n"
                 "-------------------------"
             )
 
@@ -191,8 +191,8 @@ def torrent_tar():
                     "-------------------------\n"
                     "wget https://gist.githubusercontent.com/jjshoots/61b22aefce4456920ba99f2c36906eda/raw/00046ac3403768bfe45857610a3d333b8e35e026/Roms.tar.gz.b64\n"
                     "base64 Roms.tar.gz.b64 --decode &> Roms.tar.gz\n",
-                    "AutoROM --accept-license --source-file Roms.tar.gz\n",
-                    "-------------------------"
+                    "AutoROM --accept-license --source-file Roms.tar.gz\n"
+                    "-------------------------",
                     file=sys.stderr,
                 )
 
