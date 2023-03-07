@@ -1,4 +1,4 @@
 click
 requests
-libtorrent
+libtorrent; sys_platform == 'linux'
 importlib-resources; python_version < '3.9'
