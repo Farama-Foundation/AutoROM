@@ -19,6 +19,14 @@ if sys.version_info < (3, 9):
 else:
     import importlib.resources as resources
 
+ALTERNATIVE_INSTALL_LINES = """
+-------------------------\n
+wget https://gist.githubusercontent.com/jjshoots/61b22aefce4456920ba99f2c36906eda/raw/00046ac3403768bfe45857610a3d333b8e35e026/Roms.tar.gz.b64\n
+base64 Roms.tar.gz.b64 --decode &> Roms.tar.gz\n
+AutoROM --accept-license --source-file Roms.tar.gz\n
+-------------------------
+"""
+
 CHECKSUM_MAP: Dict[str, str] = {
     "4b27f5397c442d25f0c418ccdacf1926": "adventure",
     "35be55426c1fec32dfb503b4f0651572": "air_raid",
@@ -148,12 +156,8 @@ def torrent_tar():
     except ImportError as e:
         raise ImportError(
             "It seems that your OS is not supported by AutoROM's automatic install procedure.\n"
-            "Try these lines instead:\n"
-            "-------------------------\n"
-            "wget https://gist.githubusercontent.com/jjshoots/61b22aefce4456920ba99f2c36906eda/raw/00046ac3403768bfe45857610a3d333b8e35e026/Roms.tar.gz.b64\n"
-            "base64 Roms.tar.gz.b64 --decode &> Roms.tar.gz\n"
-            "AutoROM --accept-license --source-file Roms.tar.gz\n"
-            "-------------------------"
+            "Try these lines instead:\n",
+            f"{ALTERNATIVE_INSTALL_LINES}"
         ) from e
 
     # specify the save path
@@ -175,12 +179,8 @@ def torrent_tar():
         if timeit >= 360:
             raise RuntimeError(
                 "Terminating attempt to download ROMs after 180 seconds, this has failed.\n"
-                "Try these lines instead:"
-                "-------------------------\n"
-                "wget https://gist.githubusercontent.com/jjshoots/61b22aefce4456920ba99f2c36906eda/raw/00046ac3403768bfe45857610a3d333b8e35e026/Roms.tar.gz.b64\n"
-                "base64 Roms.tar.gz.b64 --decode &> Roms.tar.gz\n"
-                "AutoROM --accept-license --source-file Roms.tar.gz\n"
-                "-------------------------"
+                "Try these lines instead:\n"
+                f"{ALTERNATIVE_INSTALL_LINES}"
             )
 
         if timeit % 5 == 0:
@@ -191,11 +191,7 @@ def torrent_tar():
                 )
                 print(
                     "Optionally, run these lines:\n"
-                    "-------------------------\n"
-                    "wget https://gist.githubusercontent.com/jjshoots/61b22aefce4456920ba99f2c36906eda/raw/00046ac3403768bfe45857610a3d333b8e35e026/Roms.tar.gz.b64\n"
-                    "base64 Roms.tar.gz.b64 --decode &> Roms.tar.gz\n",
-                    "AutoROM --accept-license --source-file Roms.tar.gz\n"
-                    "-------------------------",
+                    f"{ALTERNATIVE_INSTALL_LINES}",
                     file=sys.stderr,
                 )
 
