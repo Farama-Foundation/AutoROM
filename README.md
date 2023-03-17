@@ -6,17 +6,11 @@
 AutoROM automatically installs Atari ROM files for ALE-Py (which Gymnasium Depends on) and multi-agent-ALE (which PettingZoo depends on, but will replaced by ALE-Py in the future).
 
 AutoROM automatically downloads the needed Atari ROMs from ROM hosting websites into the ALE-Py folder and Multi-Agent-ALE-py folder in a very simple manner:
-
 ```
 pip install autorom
 AutoROM
 ```
-> IMPORTANT: We do not have official support for Windows. However, if you are on Windows and encounter a DLL import error, you may need to install [OpenSSL v1.1.1S](https://slproweb.com/products/Win32OpenSSL.html).
 
-If you encounter problems with installation due to your network blocking torrenting, it is possible to install the ROMs using a pre-downloaded roms.tar.gz file.
-```
-AutoROM --source-file /path/to/roms.tar.gz
-```
 To specify a specific installation directory for your ROMs, use the `--install-dir` command line flag.
 ```
 AutoROM --install-dir /path/to/install
