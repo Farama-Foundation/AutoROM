@@ -5,7 +5,6 @@ requires = [
     "wheel",
     "requests",
     "tqdm",
-    "libtorrent; sys_platform == 'linux'",
     "click",
     "importlib-resources; python_version < '3.9'"
 ]
