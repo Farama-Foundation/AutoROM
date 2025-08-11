@@ -2,6 +2,7 @@
     <img src="https://raw.githubusercontent.com/Farama-Foundation/AutoROM/master/autorom-text.png" width="500px"/>
 </p>
 
+**Aug 11, 2025: This project has been deprecated due to a lack of wide spread community use (and largely no longer being needed), and is no longer planned to receive any additional updates or support.**
 
 AutoROM automatically installs Atari ROM files for ALE-Py (which Gymnasium Depends on) and multi-agent-ALE (which PettingZoo depends on, but will replaced by ALE-Py in the future).
 
